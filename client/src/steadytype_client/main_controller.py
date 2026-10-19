@@ -51,6 +51,8 @@ class AppController:
         self.sync = None
         self.test_runner = None
         self.dictation_runner = None
+        self.game_runner = None
+        self.game_index = 0
         self.dictation_index = 0
         self.test_timer = None
         server = os.environ.get("STEADYTYPE_SERVER") or self.store.get_setting("server")
@@ -141,6 +143,11 @@ class AppController:
         if is_panic(event):
             self.quit()
             return True
+        if self.game_runner is not None and not self.game_runner.done:
+            self.game_runner.handle(event)
+            if self.game_runner.done:
+                self._end_game()
+            return True
         if self.dictation_runner is not None and not self.dictation_runner.done:
             self.dictation_runner.handle(event)
             if self.dictation_runner.done:
@@ -189,10 +196,43 @@ class AppController:
             self.start_timed_test()
         elif name == "dictation":
             self.start_dictation()
+        elif name == "game":
+            self.start_game()
         elif name == "race":
-            self.speech.speak("Races are not in this version yet.")
+            self.start_race()
 
     # -- windows --------------------------------------------------------
+    # -- games ----------------------------------------------------------
+    def start_game(self) -> None:
+        from steadytype_engine.games.missing_letter import MissingLetterGame
+        from steadytype_engine.games.select_delete import SelectDeleteGame
+        from steadytype_engine.games.wrong_letter import WrongLetterGame
+
+        from steadytype_client.game_runner import GameRunner
+
+        games = (MissingLetterGame(), WrongLetterGame(), SelectDeleteGame())
+        game = games[self.game_index % len(games)]
+        self.game_index += 1
+        self.stop_lesson()
+        surface = self.frame.surface if self.frame is not None else None
+        self.game_runner = GameRunner(
+            game, save=self._save_attempt, speak=self.speech.speak,
+            display=surface.show if surface is not None else None)
+        self.capture_ok = False
+        if self.capture is not None:
+            self.capture_ok = self.capture.start(self._from_capture)
+        if self.frame is not None:
+            self.frame.set_status("Game")
+        if not self.capture_ok:
+            self.speech.speak("The keyboard is not captured. Keep this window in front.")
+        self.game_runner.start()
+
+    def _end_game(self) -> None:
+        self.stop_lesson()
+        self.game_runner = None
+        if self.frame is not None:
+            self.frame.set_status("Game over")
+
     # -- dictation ------------------------------------------------------
     def start_dictation(self) -> None:
         from steadytype_client.dictation_runner import PASSAGES, DictationRunner
@@ -244,6 +284,28 @@ class AppController:
             self.capture_ok = self.capture.start(self._from_capture)
         if self.frame is not None:
             self.frame.set_status("Timed test")
+            self.test_timer = wx.Timer(self.frame)
+            self.frame.Bind(wx.EVT_TIMER, self._on_test_tick, self.test_timer)
+            self.test_timer.Start(500)
+        if not self.capture_ok:
+            self.speech.speak("The keyboard is not captured. Keep this window in front.")
+        self.test_runner.start()
+
+    def start_race(self) -> None:
+        import wx
+
+        from steadytype_client.race import RaceRunner
+
+        self.stop_lesson()
+        surface = self.frame.surface if self.frame is not None else None
+        self.test_runner = RaceRunner(
+            save=self._save_attempt, speak=self.speech.speak,
+            display=surface.show if surface is not None else None)
+        self.capture_ok = False
+        if self.capture is not None:
+            self.capture_ok = self.capture.start(self._from_capture)
+        if self.frame is not None:
+            self.frame.set_status("Race")
             self.test_timer = wx.Timer(self.frame)
             self.frame.Bind(wx.EVT_TIMER, self._on_test_tick, self.test_timer)
             self.test_timer.Start(500)
