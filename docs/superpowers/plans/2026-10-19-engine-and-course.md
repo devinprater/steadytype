@@ -1264,9 +1264,256 @@ git commit -m "feat: add the five seed lessons and the curriculum test"
 
 ---
 
+### Task 16: Certification scoring
+
+**Files:**
+- Create: `engine/src/steadytype_engine/certification.py`
+- Test: `engine/tests/test_certification.py`
+
+**Interfaces:**
+- Produces: `CertificationResult(gross_wpm: float, net_wpm: float, error_words: int, accuracy: float, passed: bool)`; `word_errors(typed: str, target: str) -> int`; `score_test(typed: str, target: str, seconds: float, min_net_wpm: float = 50.0, max_errors: int = 10) -> CertificationResult`; `CERTIFICATION_TEXT: str`, the spoken sentence naming the Alabama requirement and its approved testers.
+- Rules: words are compared by position after splitting on whitespace. A position counts as an error when the word differs, is missing, or is extra. Gross speed is typed characters divided by five, divided by minutes. Net speed is gross minus errors per minute. A pass needs both the speed and the error limit.
+
+- [ ] **Step 1: Write the failing tests**
+
+```python
+# engine/tests/test_certification.py
+import pytest
+
+from steadytype_engine.certification import score_test, word_errors
+
+TARGET = "the quick brown fox jumps over the lazy dog"
+
+
+def test_perfect_text_has_no_errors():
+    assert word_errors(TARGET, TARGET) == 0
+
+
+def test_one_wrong_word_is_one_error():
+    assert word_errors(TARGET.replace("brown", "brawn"), TARGET) == 1
+
+
+def test_a_missing_word_and_an_extra_word_each_count_once():
+    assert word_errors(TARGET.rsplit(" ", 1)[0], TARGET) == 1
+    assert word_errors(TARGET + " extra", TARGET) == 1
+
+
+def test_net_speed_deducts_one_word_per_error_per_minute():
+    typed = "word " * 100
+    wrong = typed.replace("word", "ward", 5)
+    result = score_test(wrong, typed, 60)
+    assert result.error_words == 5
+    assert result.gross_wpm == pytest.approx(100.0)
+    assert result.net_wpm == pytest.approx(95.0)
+
+
+def test_pass_needs_both_the_speed_and_the_error_limit():
+    typed = "word " * 100
+    assert score_test(typed, typed, 60).passed
+    eleven = typed.replace("word", "ward", 11)
+    assert score_test(eleven, typed, 60).error_words == 11
+    assert not score_test(eleven, typed, 60).passed
+```
+
+- [ ] **Step 2: Run the tests to verify they fail**
+
+Run: `cd engine && python -m pytest tests/test_certification.py -v`
+Expected: FAIL with module-not-found.
+
+- [ ] **Step 3: Implement `certification.py`**
+
+Compare `typed.split()` with `target.split()` over `range(max(len(typed_words), len(target_words)))`. A short typed list or a long one yields one error per unmatched position. Accuracy is `(positions - errors) / positions * 100`. `CERTIFICATION_TEXT` reads: "Alabama needs at least 50 net words per minute with 10 or fewer errors. This is a practice score, not a certificate. The official certificate comes from an Alabama Career Center, a business education teacher at an Alabama school, or an accredited business school, trade school, or college."
+
+- [ ] **Step 4: Run the tests to verify they pass**
+
+Run: `cd engine && python -m pytest tests/test_certification.py -v`
+Expected: PASS.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add engine/src/steadytype_engine/certification.py engine/tests/test_certification.py
+git commit -m "feat: score the Alabama certification test"
+```
+
+---
+
+### Task 17: The timed test session
+
+**Files:**
+- Create: `engine/src/steadytype_engine/timed_test.py`
+- Test: `engine/tests/test_timed_test.py`
+
+**Interfaces:**
+- Consumes: `Passage` from Task 8; `KeyEvent`; `Speak`, `Tone`, `ToneName`; `certification.score_test` and `CertificationResult` from Task 16.
+- Produces: `TestState` enum `READY | RUNNING | FINISHED`; `TimedTest(passage, seconds, allow_backspace=True, min_net_wpm=50.0, max_errors=10, now=time.monotonic)` with `read_passage()`, `start()`, `handle(event)`, `tick(now)`, `finish() -> CertificationResult`, and the properties `state`, `typed`, `remaining_seconds`.
+- Rules: no correction and no per-key feedback. Backspace is ignored when not allowed. A one-minute warning is spoken once. The test finishes at zero or on Escape, and an early finish is scored on the time actually used.
+
+- [ ] **Step 1: Write the failing tests**
+
+```python
+# engine/tests/test_timed_test.py
+from steadytype_engine.dictation import Passage
+from steadytype_engine.keys import Key, KeyEvent, Side
+from steadytype_engine.timed_test import TestState, TimedTest
+
+
+def _key(char: str) -> KeyEvent:
+    key = Key.SPACE if char == " " else Key(char)
+    return KeyEvent(kind="down", key=key, text=char, modifiers=frozenset(),
+                    side=Side.NONE, is_repeat=False, scan_code=0, timestamp=0.0)
+
+
+def make_test(**kwargs) -> TimedTest:
+    return TimedTest(Passage("T", "the quick brown fox"), seconds=300, **kwargs)
+
+
+def test_reading_the_passage_speaks_it_once():
+    test = make_test()
+    assert "the quick brown fox" in test.read_passage()[0].text
+
+
+def test_a_wrong_character_is_accepted_without_feedback():
+    test = make_test()
+    test.start()
+    commands = test.handle(_key("x"))
+    assert test.typed == "x"
+    assert commands == []
+
+
+def test_backspace_is_ignored_when_not_allowed():
+    test = make_test(allow_backspace=False)
+    test.start()
+    test.handle(_key("a"))
+    test.handle(KeyEvent(kind="down", key=Key.BACKSPACE, text=None,
+                         modifiers=frozenset(), side=Side.NONE,
+                         is_repeat=False, scan_code=0, timestamp=0.0))
+    assert test.typed == "a"
+
+
+def test_one_minute_warning_is_spoken_once(monkeypatch):
+    test = TimedTest(Passage("T", "the quick brown fox"), seconds=300,
+                     now=lambda: 0.0)
+    test.start()
+    assert any("one minute" in c.text for c in test.tick(240.0))
+    assert test.tick(241.0) == []
+
+
+def test_finishing_at_zero_scores_the_test():
+    clock = {"now": 0.0}
+    test = TimedTest(Passage("T", "the quick brown fox"), seconds=60,
+                     now=lambda: clock["now"])
+    test.start()
+    for char in "the quick brown fox":
+        test.handle(_key(char))
+    clock["now"] = 60.0
+    result = test.finish()
+    assert test.state is TestState.FINISHED
+    assert result.error_words == 0
+```
+
+- [ ] **Step 2: Run the tests to verify they fail**
+
+Run: `cd engine && python -m pytest tests/test_timed_test.py -v`
+Expected: FAIL with module-not-found.
+
+- [ ] **Step 3: Implement `timed_test.py`**
+
+Store the start time on `start()`. `tick` compares elapsed time with `seconds` and speaks the warning once when 60 seconds remain; it returns an empty list otherwise. `finish()` computes elapsed seconds, calls `score_test`, and moves to `FINISHED`. `handle` appends `event.text` when the test is running and the key is printable.
+
+- [ ] **Step 4: Run the tests to verify they pass**
+
+Run: `cd engine && python -m pytest tests/test_timed_test.py -v`
+Expected: PASS.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add engine/src/steadytype_engine/timed_test.py engine/tests/test_timed_test.py
+git commit -m "feat: add the timed certification test"
+```
+
+---
+
+### Task 18: Practice clock and the student summary
+
+**Files:**
+- Create: `engine/src/steadytype_engine/practice.py`
+- Test: `engine/tests/test_practice.py`
+
+**Interfaces:**
+- Consumes: `AttemptRecord` and `KeyStat` from Task 7; `Speak`, `Tone`, `ToneName`.
+- Produces: `PracticeClock(goal_minutes: int | None)` with `add_active_seconds(seconds: float) -> None`, `announcements() -> list[Command]`, and the properties `minutes_today`, `goal_reached`; `StatsSummary(lessons_completed, current_lesson, average_accuracy, average_wpm, best_wpm, minutes_today, minutes_this_week, weakest_keys)`; `summarize(attempts: Sequence[AttemptRecord], today: date) -> StatsSummary`.
+- Rules: with a goal, announce at halfway, at five minutes remaining, and at the goal, each exactly once. With no goal, `announcements()` always returns an empty list. `summarize` averages the last ten practice attempts, ignores certification attempts for stars and speed, and returns the five keys with the most errors.
+
+- [ ] **Step 1: Write the failing tests**
+
+```python
+# engine/tests/test_practice.py
+from datetime import date
+
+import pytest
+
+from steadytype_engine.commands import Speak
+from steadytype_engine.practice import PracticeClock, summarize
+
+
+def test_goal_announces_halfway_warning_and_finish_once():
+    clock = PracticeClock(goal_minutes=40)
+    clock.add_active_seconds(20 * 60)
+    assert any("20" in c.text for c in clock.announcements())
+    assert clock.announcements() == []
+    clock.add_active_seconds(15 * 60)
+    assert any("5 minutes" in c.text for c in clock.announcements())
+    clock.add_active_seconds(5 * 60)
+    assert any("goal" in c.text for c in clock.announcements())
+    assert clock.goal_reached
+    assert clock.announcements() == []
+
+
+def test_no_goal_never_announces():
+    clock = PracticeClock(goal_minutes=None)
+    clock.add_active_seconds(3600)
+    assert clock.announcements() == []
+    assert clock.minutes_today == 60
+
+
+def test_summary_averages_the_last_ten_practice_attempts(attempts):
+    summary = summarize(attempts, today=date(2026, 10, 19))
+    assert summary.lessons_completed == 3
+    assert summary.average_wpm == pytest.approx(30.0)
+    assert summary.best_wpm == 45.0
+    assert [key.key for key in summary.weakest_keys][:2] == ["p", "q"]
+```
+
+- [ ] **Step 2: Run the tests to verify they fail**
+
+Run: `cd engine && python -m pytest tests/test_practice.py -v`
+Expected: FAIL with module-not-found.
+
+- [ ] **Step 3: Implement `practice.py`**
+
+Track `active_seconds` and a set of already-announced milestone names. The halfway point is half the goal, rounded down to the minute; the warning is at goal minus five minutes, skipped when the goal is ten minutes or less, where the warning is at one fifth remaining instead. `summarize` takes the most recent ten attempts whose `kind` is `practice` or `race`, averages `accuracy` and `wpm`, collects `key_stats` into a dictionary, and sorts by errors.
+
+Add an `attempts` fixture in `engine/tests/conftest.py` building eight `AttemptRecord`s with known speeds and key statistics.
+
+- [ ] **Step 4: Run the tests to verify they pass**
+
+Run: `cd engine && python -m pytest tests/test_practice.py -v`
+Expected: PASS.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add engine/src/steadytype_engine/practice.py engine/tests/conftest.py engine/tests/test_practice.py
+git commit -m "feat: add the practice clock and student summary"
+```
+
+---
+
 ## Self-Review
 
-**Spec coverage for this plan:** C-8 to C-15 (lesson flow and results), C-16 to C-19 partially (the engine side of repeat and next; command handling belongs to the client), C-20 to C-25 (the engine emits speech and tones; the client speaks), §5.1 to §5.3 (content format, three games, dictation), §6.1 to §6.5 (engine boundary, keys, format, scoring, attempt record), §13 engine, curriculum, and capture-independent tests. The client, capture, server, dashboard, deployment, and the remaining 67 lessons belong to plans 2 and 3.
+**Spec coverage for this plan:** C-8 to C-15 (lesson flow and results), C-16 to C-19 partially (the engine side of repeat and next; command handling belongs to the client), C-20 to C-25 (the engine emits speech and tones; the client speaks), C-32 to C-50 (the student summary, the practice clock, certification scoring, and the timed test), §5.1 to §5.3 (content format, three games, dictation), §6.1 to §6.5 (engine boundary, keys, format, scoring, attempt record), §13 engine, curriculum, and capture-independent tests. The client, capture, server, dashboard, deployment, and the remaining 67 lessons belong to plans 2 and 3.
 
 **Gaps found and fixed while writing:** the spec's YAML example has no way to express a key target such as F1, so `TaskKind.KEY` and `TaskKind.COMBO` were added here; the spec's engine rule "standard library only" is amended to "standard library and PyYAML" because lessons are YAML; and the spec's game descriptions implied a cursor, so `TextBuffer` became its own task.
 

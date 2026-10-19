@@ -39,6 +39,7 @@ speech-first, but every screen is also a normal accessible window.
 - A desktop client for Windows, then macOS, then Linux.
 - A built-in course of 72 lessons, including 9 game lessons built from 3 game types.
 - Dictation lessons, races, and per-attempt scoring.
+- A My Progress window, a daily practice goal, and timed certification practice.
 - Speech through Prism, tones for non-speech cues.
 - Full keyboard capture during lessons, including modifier sides and system keys.
 - Sign-in with username and password, with two levels of remembering.
@@ -164,6 +165,59 @@ Stored per student and synced:
   when they would change what the student types.
 - **C-31** WCAG 2.1 AA is applied to every client window and dialog, using the
   criteria that apply to desktop software.
+
+### 4.7 A student's own progress
+
+- **C-32** The client has a My Progress window, opened from the File menu and by F12
+  twice. It uses native controls: a summary area and a list of recent lessons.
+- **C-33** It shows lessons completed out of 72, the current lesson, stars for each
+  completed lesson, average accuracy over the last ten attempts, average speed, best
+  speed, practice time today and this week, the daily goal and progress toward it, and
+  the five keys with the most errors.
+- **C-34** Opening it speaks a short summary. The details are then read with Tab and
+  the arrow keys like any other list.
+- **C-35** It works offline from local records and marks attempts that have not synced
+  yet.
+
+### 4.8 The daily practice goal
+
+- **C-36** A class sets a daily goal in active practice minutes: a whole number from 5
+  to 300, or none. The default is 40 minutes, sized for a 50-minute class period.
+- **C-37** Only active typing counts, using the same rule as an attempt: a gap longer
+  than five seconds is idle. The clock does not run when no lesson is in progress.
+- **C-38** The student hears the time at halfway, at five minutes remaining, and when
+  the goal is reached, with a tone at the goal. A goal shorter than ten minutes uses
+  its own halfway point and warns at one fifth remaining.
+- **C-39** After the goal is met the student may keep practicing. The client says so
+  once and then stops announcing time.
+- **C-40** The goal resets at local midnight in the school's timezone and applies the
+  same way to distance students.
+- **C-41** A preference can turn the spoken time announcements off while keeping the
+  goal and the display.
+
+### 4.9 Certification practice for Alabama
+
+- **C-42** A Timed Test mode, opened from the Lesson menu and by F6 twice.
+- **C-43** The default length is five minutes. A class may choose three, five, ten, or
+  any value from 1 to 15.
+- **C-44** The student may hear the passage once before starting. During the test there
+  is no speech except a one-minute warning and the result, and no per-key correction.
+- **C-45** Backspace is allowed by default; a class may forbid it.
+- **C-46** Gross words per minute is the typed characters divided by five, divided by
+  the minutes. An error is a target word typed with any wrong character, counted once
+  per word. Net words per minute is gross minus errors per minute. The default pass is
+  at least 50 net words per minute with 10 or fewer errors, which matches the Alabama
+  State Personnel Certificate of Proficiency.
+- **C-47** The result shows gross speed, net speed, errors, accuracy, and pass or not,
+  and states plainly that it is a practice score, not a certificate.
+- **C-48** The app never issues a Certificate of Proficiency. The result names the
+  requirement and says the official certificate must come from an approved
+  administrator: an Alabama Career Center, a business education teacher at an Alabama
+  school, or an accredited business school, trade school, or college.
+- **C-49** A certification attempt is stored and shown separately from lesson practice
+  and never affects stars.
+- **C-50** Staff can export or print a student's certification attempts as a plain text
+  file.
 
 ## 5. Course content
 
@@ -448,11 +502,15 @@ display_name, disabled_at, must_change_password, created_at, last_login_at.
 (JSONB).
 
 `class_courses` — id, class_id, course_id, start_ordinal, end_ordinal, goals
-(JSONB: wpm_target, accuracy_target, allow_backspace, star_thresholds).
+(JSONB: wpm_target, accuracy_target, allow_backspace, star_thresholds,
+practice_minutes_per_day (null or 5 to 300), certification_net_wpm default 50,
+certification_max_errors default 10).
 
-`attempts` — id (UUID, client-generated), student_id, lesson_id, kind, started_at,
-ended_at, active_seconds, characters, keypresses, errors, wpm, accuracy,
-real_accuracy, stars, device_id, client_version, synced_at, raw (JSONB).
+`attempts` — id (UUID, client-generated), student_id, lesson_id, kind (practice,
+race, dictation, certification), started_at, ended_at, active_seconds, characters,
+keypresses, errors, wpm, accuracy, real_accuracy, stars, device_id, client_version,
+synced_at, raw (JSONB). Certification attempts also carry duration_seconds,
+gross_wpm, net_wpm, error_words, and passed.
 
 `key_stats` — attempt_id, key, presses, errors. Primary key on attempt_id and key.
 
@@ -494,17 +552,21 @@ task works with it disabled.
 - **Sign in.**
 - **Classes:** every class the user may see, with student count and last activity.
 - **Class scoreboard:** one row per student — lessons completed, stars, average
-  accuracy, average speed, practice time this week, last active. Sortable by link.
+  accuracy, average speed, practice minutes today against the class goal, practice
+  time this week, best certification score, last active. Sortable by link.
 - **Progress grid:** students down the side, lessons across the top. Each cell reads
   as text, for example "4 stars, 92 percent, 18 words per minute". A legend explains
   the pattern without relying on color.
 - **Student page:** current lesson, a table of every lesson with best attempt and
-  attempt count, the full attempt history, and a per-key error table.
+  attempt count, the full attempt history, a per-key error table, and a separate
+  table of certification attempts with date, gross speed, net speed, errors, and
+  pass.
 - **Reports:** daily and weekly practice time over a chosen date range, with CSV
   export. Charts carry the same numbers in a table. Dates are stored in UTC and
   shown in the school's timezone.
 - **Class settings:** goals for speed, accuracy, Backspace, and star thresholds;
-  lesson range; archive.
+  daily practice minutes with a default of 40 and a "none" option; certification
+  target net speed and maximum errors; lesson range; archive.
 - **People:** add a student, reset a password, disable an account, move a student,
   add a teacher (admin only). The form suggests a username from the display name
   and a number, and the teacher may change it before saving.
