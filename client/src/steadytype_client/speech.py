@@ -45,17 +45,21 @@ def _load_prism():
 
 
 class PrismSpeech:
+    reason: str = ""
+
     def __init__(self, backend=None) -> None:
         if backend is None:
             module = _load_prism()
             try:
                 backend = module.Context().create_best()
             except Exception as error:
+                PrismSpeech.reason = f"{type(error).__name__}: {error}"
                 raise SpeechUnavailable(
                     "No screen reader or speech engine was found. "
                     "Start your screen reader, or install a speech voice, then try again."
                 ) from error
             if backend is None:
+                PrismSpeech.reason = "create_best() returned nothing"
                 raise SpeechUnavailable(
                     "No screen reader or speech engine was found. "
                     "Start your screen reader, or install a speech voice, then try again."

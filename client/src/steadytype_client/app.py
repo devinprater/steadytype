@@ -65,7 +65,12 @@ def main(argv=None) -> int:
             speech = FakeSpeech()
 
     try:
-        (paths.data_dir / "speech.log").write_text(f"{speech.name}\n", encoding="utf-8")
+        from steadytype_client.speech import PrismSpeech
+
+        detail = f"{speech.name}\n"
+        if PrismSpeech.reason:
+            detail += f"prism: {PrismSpeech.reason}\n"
+        (paths.data_dir / "speech.log").write_text(detail, encoding="utf-8")
     except OSError:
         pass
 
@@ -85,5 +90,6 @@ def main(argv=None) -> int:
     controller = AppController(store, account, paths, speech, player, course)
     frame = MainFrame(controller)
     frame.Show()
+    controller.begin()
     app.MainLoop()
     return 0

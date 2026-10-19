@@ -79,6 +79,18 @@ class AppController:
         except Exception:  # noqa: BLE001, S110 - a backend may not support every voice setting
             pass
 
+    def begin(self) -> None:
+        """Speak a welcome and start where the student left off."""
+        done = {a.get("lesson_id") for a in self.store.attempts(self.account.id)
+                if a.get("kind") in ("practice", "race")}
+        index = next((i for i, lesson in enumerate(self.course.lessons)
+                      if lesson.id not in done), 0)
+        self.lesson_index = index
+        lesson = self.course.lessons[index]
+        self.speech.speak(f"Signed in as {self.account.display_name}. "
+                          f"Lesson {lesson.id}, {lesson.title}.", True)
+        self.start_lesson(lesson)
+
     # -- lessons --------------------------------------------------------
     def start_lesson(self, lesson: Lesson, start_task: int = 0) -> None:
         self.stop_lesson()

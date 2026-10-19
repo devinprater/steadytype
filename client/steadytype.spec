@@ -14,7 +14,7 @@ a = Analysis(
         (str(repo / "assets" / "sounds"), "assets/sounds"),
         (str(repo / "content"), "content"),
     ],
-    hiddenimports=["prism", "prism._prism_cffi", "wx"],
+    hiddenimports=["prism", "prism._prism_cffi", "wx", "Quartz", "objc"],
     hookspath=[],
     runtime_hooks=[],
     excludes=[],
