@@ -1,5 +1,10 @@
-from steadytype_client.capture.windows import map_key
+from steadytype_client.capture.windows import WM_KEYDOWN, WM_KEYUP, is_key_down, map_key
 from steadytype_engine.keys import Key
+
+
+def test_only_key_down_messages_become_events():
+    assert is_key_down(WM_KEYDOWN)
+    assert not is_key_down(WM_KEYUP)
 
 
 def test_letters_and_shifted_letters():

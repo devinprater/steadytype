@@ -43,6 +43,10 @@ NUMPAD.update({0x6A: Key.NUMPAD_MULTIPLY, 0x6B: Key.NUMPAD_ADD,
                0x6F: Key.NUMPAD_DIVIDE})
 
 
+def is_key_down(wparam: int) -> bool:
+    return wparam in (WM_KEYDOWN, WM_SYSKEYDOWN)
+
+
 def map_key(vk: int, scan: int, extended: bool, shift: bool, control: bool,
             alt: bool) -> KeyEvent | None:
     modifiers = set()
@@ -101,6 +105,17 @@ class KBDLLHOOKSTRUCT(ctypes.Structure):
 
 HOOKPROC = ctypes.WINFUNCTYPE(ctypes.c_ssize_t, ctypes.c_int, wintypes.WPARAM, wintypes.LPARAM)
 
+user32 = ctypes.WinDLL("user32", use_last_error=True)
+kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+user32.SetWindowsHookExW.restype = wintypes.HHOOK
+user32.SetWindowsHookExW.argtypes = [ctypes.c_int, HOOKPROC, wintypes.HINSTANCE, wintypes.DWORD]
+user32.CallNextHookEx.restype = ctypes.c_ssize_t
+user32.CallNextHookEx.argtypes = [wintypes.HHOOK, ctypes.c_int, wintypes.WPARAM, wintypes.LPARAM]
+user32.UnhookWindowsHookEx.argtypes = [wintypes.HHOOK]
+kernel32.GetModuleHandleW.restype = wintypes.HMODULE
+kernel32.GetModuleHandleW.argtypes = [wintypes.LPCWSTR]
+user32.GetAsyncKeyState.restype = ctypes.c_short
+
 
 class WindowsCapture:
     def __init__(self, callback: Callable[[KeyEvent], None] | None = None) -> None:
@@ -109,6 +124,7 @@ class WindowsCapture:
         self._thread_id = 0
         self.active = False
         self._hook = None
+        self.error = 0
 
     def start(self, callback: Callable[[KeyEvent], None] | None = None) -> bool:
         if callback is not None:
@@ -122,19 +138,26 @@ class WindowsCapture:
         return self.active
 
     def _run(self, started: threading.Event) -> None:
-        user32 = ctypes.windll.user32
-        kernel32 = ctypes.windll.kernel32
+        pressed: set[int] = set()
 
         def handler(code, wparam, lparam):
             if code < 0:
                 return user32.CallNextHookEx(None, code, wparam, lparam)
             info = ctypes.cast(lparam, ctypes.POINTER(KBDLLHOOKSTRUCT)).contents
+            if not is_key_down(wparam):
+                pressed.discard(info.vkCode)
+                return 1
             shift = bool(user32.GetAsyncKeyState(0x10) & 0x8000)
             control = bool(user32.GetAsyncKeyState(0x11) & 0x8000)
             alt = bool(user32.GetAsyncKeyState(0x12) & 0x8000)
             event = map_key(info.vkCode, info.scanCode, bool(info.flags & 0x01),
                             shift, control, alt)
             if event is not None and self._callback is not None:
+                if info.vkCode in pressed:
+                    from dataclasses import replace
+                    event = replace(event, is_repeat=True)
+                else:
+                    pressed.add(info.vkCode)
                 self._callback(event)
             return 1
 
@@ -142,6 +165,7 @@ class WindowsCapture:
         self._thread_id = kernel32.GetCurrentThreadId()
         self._hook = user32.SetWindowsHookExW(WH_KEYBOARD_LL, self._proc,
                                               kernel32.GetModuleHandleW(None), 0)
+        self.error = ctypes.get_last_error() if not self._hook else 0
         self.active = bool(self._hook)
         started.set()
         if not self.active:
@@ -156,5 +180,5 @@ class WindowsCapture:
     def stop(self) -> None:
         if not self.active:
             return
-        ctypes.windll.user32.PostThreadMessageW(self._thread_id, 0x0012, 0, 0)
+        user32.PostThreadMessageW(self._thread_id, 0x0012, 0, 0)
         self.active = False
