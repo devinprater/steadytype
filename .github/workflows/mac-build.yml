@@ -22,8 +22,8 @@ jobs:
       - name: Test
         run: |
           pip install pytest httpx
-          pytest engine -q
-          pytest client -m "not ui" -q
+          pytest engine/tests -q
+          pytest client/tests -m "not ui" -q
       - name: Self check
         run: |
           STEADYTYPE_DATA_DIR="$RUNNER_TEMP/st" python client/launcher.py --self-check --no-speech
