@@ -59,15 +59,21 @@ class TimedTest:
                 self.typed = self.typed[:-1]
             return []
         if event.key is Key.ESCAPE:
-            return []
+            self.state = TestState.FINISHED
+            return [Speak("Test finished.", interrupt=True)]
         if event.text is not None:
             self.typed += event.text
         return []
 
     def tick(self, now: float) -> list[Command]:
-        if self.state is not TestState.RUNNING or self._warned:
+        if self.state is not TestState.RUNNING:
             return []
         remaining = self.seconds - (now - self._started)
+        if remaining <= 0:
+            self.state = TestState.FINISHED
+            return [Speak("Time.", interrupt=True)]
+        if self._warned:
+            return []
         if 0 < remaining <= 60:
             self._warned = True
             return [Speak("You have one minute left.", interrupt=True)]

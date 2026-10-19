@@ -22,6 +22,19 @@ class DictationResult:
     misspelled: tuple[str, ...]
 
 
+def _chunk_boundaries(text: str, size: int = 3) -> tuple[int, ...]:
+    """Character index in the passage where each chunk ends."""
+    words = text.split()
+    ends: list[int] = []
+    position = 0
+    for start in range(0, len(words), size):
+        chunk = " ".join(words[start:start + size])
+        position += len(chunk)
+        ends.append(position)
+        position += 1
+    return tuple(ends)
+
+
 def chunk_text(text: str, size: int = 3) -> tuple[str, ...]:
     words = text.split()
     if not words:
@@ -34,6 +47,7 @@ class DictationSession:
         self.passage = passage
         self.prefs = prefs
         self.chunks = chunk_text(passage.text)
+        self._chunk_ends = _chunk_boundaries(passage.text)
         self.chunk_index = 0
         self.typed = ""
         self._done = False
@@ -58,9 +72,13 @@ class DictationSession:
             return []
         self.typed += event.text
         commands = self._echo(event.text)
-        if len(self.typed) >= len(self._current_chunk()):
+        if len(self.typed) >= self._chunk_ends[self.chunk_index]:
             commands.extend(self._advance())
         return commands
+
+    @property
+    def finished(self) -> bool:
+        return self._done
 
     def finish(self) -> DictationResult:
         expected = self.passage.text.split()

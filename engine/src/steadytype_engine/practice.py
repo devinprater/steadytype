@@ -58,7 +58,8 @@ class PracticeClock:
             commands.append(Speak(
                 f"You have practiced {round(self.active_seconds / 60)} minutes "
                 f"of {self.goal_minutes}.", interrupt=False))
-        if self.active_seconds >= warning_at and "warning" not in self._announced:
+        if (self.active_seconds >= warning_at and self.active_seconds < goal_seconds
+                and "warning" not in self._announced):
             self._announced.add("warning")
             commands.append(Speak(warning_text, interrupt=False))
         if self.active_seconds >= goal_seconds and "goal" not in self._announced:

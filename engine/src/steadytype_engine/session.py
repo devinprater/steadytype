@@ -16,6 +16,12 @@ from .scoring import AttemptRecord, Goals, KeyStat, Metrics
 
 IDLE_GAP_SECONDS = 5.0
 
+_IGNORED_KEYS = {
+    Key.LEFT_SHIFT, Key.RIGHT_SHIFT, Key.LEFT_CONTROL, Key.RIGHT_CONTROL,
+    Key.LEFT_ALT, Key.RIGHT_ALT, Key.LEFT_META, Key.RIGHT_META,
+    Key.CAPS_LOCK, Key.NUM_LOCK,
+}
+
 
 class SessionState(Enum):
     INTRO = "intro"
@@ -71,6 +77,8 @@ class LessonSession:
             return []
         if event.is_repeat:
             return []
+        if event.key in _IGNORED_KEYS:
+            return []
 
         self._account_time(event.timestamp)
         self._keypresses += 1
@@ -86,6 +94,9 @@ class LessonSession:
         return []
 
     def repeat_instructions(self) -> list[Command]:
+        if self.state is SessionState.LESSON_DONE:
+            return [Speak("The lesson is finished. Press Enter for the next lesson, "
+                          "or F3 twice to choose another.", interrupt=True)]
         task = self.lesson.tasks[self.task_index]
         if self.position >= self._target_length():
             return [Speak(f"Press {self._end_key_name()} to finish this one.",
@@ -188,8 +199,11 @@ class LessonSession:
         return commands
 
     def _handle_end_key(self, event: KeyEvent) -> list[Command]:
-        wanted = Key.SPACE if self.lesson.end_key is EndKey.SPACE else Key.ENTER
-        if event.key is wanted:
+        if self.lesson.end_key is EndKey.SPACE:
+            wanted = {Key.SPACE}
+        else:
+            wanted = {Key.ENTER, Key.NUMPAD_ENTER}
+        if event.key in wanted:
             return self._complete_repeat()
         self._errors += 1
         return [Speak(f"Press {self._end_key_name()} to finish the task.", interrupt=True)]

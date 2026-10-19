@@ -22,11 +22,12 @@ def test_no_task_uses_an_untaught_character():
             assert not unknown, f"lesson {lesson.id}: {sorted(unknown)} in {task.text!r}"
 
 
-def test_a_task_teaching_enter_does_not_use_enter_as_its_end_key():
+def test_a_lesson_teaching_enter_does_not_end_tasks_with_enter():
     for lesson in COURSE.lessons:
-        for task in lesson.tasks:
-            if task.kind is TaskKind.KEY and task.text == "enter":
-                assert lesson.end_key is EndKey.NONE, f"lesson {lesson.id}"
+        if "enter" not in lesson.teaches:
+            continue
+        assert lesson.end_key is not EndKey.ENTER, (
+            f"lesson {lesson.id}: teaches enter but uses enter as its end key")
 
 
 def test_every_lesson_declares_what_it_teaches():
