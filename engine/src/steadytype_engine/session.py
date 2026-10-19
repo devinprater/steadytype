@@ -77,7 +77,7 @@ class LessonSession:
         if self.state is SessionState.TASK_INTRO:
             self.state = SessionState.TYPING
 
-        if self.position >= len(self._target()):
+        if self.position >= self._target_length():
             return self._handle_end_key(event)
         return self._handle_character(event)
 
@@ -85,17 +85,27 @@ class LessonSession:
         return []
 
     def repeat_instructions(self) -> list[Command]:
-        target = self._target()
-        expected = target[self.position] if self.position < len(target) else None
-        if expected is None:
-            return [Speak(f"Type {spoken(self._end_key_name())} to finish this one.", interrupt=True)]
+        task = self.lesson.tasks[self.task_index]
+        if self.position >= self._target_length():
+            return [Speak(f"Press {self._end_key_name()} to finish this one.",
+                          interrupt=True)]
+        if task.kind is TaskKind.TEXT:
+            expected = self._target()[self.position]
+            spoken_expected = spoken(expected)
+        else:
+            expected = task.text
+            spoken_expected = spoken(expected)
         return [Speak(
-            f"Type {spoken(expected)}. You are at character {self.position + 1} "
-            f"of {len(target)}.", interrupt=True)]
+            f"Type {spoken_expected}. You are at {self.position + 1} "
+            f"of {self._target_length()}.", interrupt=True)]
 
     # -- internals ------------------------------------------------------
     def _target(self) -> str:
         return self.lesson.tasks[self.task_index].text
+
+    def _target_length(self) -> int:
+        task = self.lesson.tasks[self.task_index]
+        return 1 if task.kind is not TaskKind.TEXT else len(task.text)
 
     def _end_key_name(self) -> str:
         return "space" if self.lesson.end_key is EndKey.SPACE else "enter"
@@ -146,7 +156,7 @@ class LessonSession:
             commands.append(Tone(ToneName.CORRECT))
         if _has_word(self.prefs):
             commands.append(Speak("right"))
-        if self.position >= len(self._target()):
+        if self.position >= self._target_length():
             if self.lesson.end_key is EndKey.NONE:
                 commands.extend(self._complete_repeat())
             else:
@@ -248,10 +258,11 @@ class LessonSession:
     def _characters(self) -> int:
         total = 0
         for index, task in enumerate(self.lesson.tasks):
+            size = 1 if task.kind is not TaskKind.TEXT else len(task.text)
             if index < self.task_index:
-                total += len(task.text) * self.lesson.repeat
+                total += size * self.lesson.repeat
             elif index == self.task_index:
-                total += len(task.text) * (self.current_repeat - 1) + self.position
+                total += size * (self.current_repeat - 1) + self.position
         return total
 
 
