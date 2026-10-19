@@ -74,6 +74,7 @@ class MainFrame(wx.Frame):
             "F3 twice: pick a lesson. F4 twice: dictation. F5 twice: race.\n"
             "F6 twice: timed test. F12 twice: my progress.\n"
             "Escape three times: leave the lesson and quit.\n"
+            "Control Alt Shift X: leave any lesson, even the function key lesson.\n"
             "Every one of these is also in the menus.")
         self.controller.speech.speak(text)
         wx.MessageBox(text, "Keyboard commands", wx.OK | wx.ICON_INFORMATION, self)

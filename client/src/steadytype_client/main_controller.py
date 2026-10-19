@@ -5,15 +5,27 @@ from __future__ import annotations
 import sys
 from dataclasses import replace
 
-from steadytype_engine.keys import Key
+from steadytype_engine.keys import Key, KeyEvent, Modifier
 from steadytype_engine.lesson import Course, Lesson
 from steadytype_engine.preferences import Preferences
 from steadytype_engine.scoring import Goals
 
-from steadytype_client.capture.windows import WindowsCapture
 from steadytype_client.prefs_json import from_dict, to_dict
 from steadytype_client.presenter import LessonPresenter
 from steadytype_client.router import FUNCTION_KEYS, CommandRouter
+
+if sys.platform == "win32":
+    from steadytype_client.capture.windows import WindowsCapture
+else:  # pragma: no cover - the other platforms arrive in a later plan
+    WindowsCapture = None
+
+
+def is_panic(event: KeyEvent) -> bool:
+    """Control Alt Shift X leaves any lesson, including the function-key lesson."""
+    return (event.key is Key.X
+            and Modifier.CONTROL in event.modifiers
+            and Modifier.ALT in event.modifiers
+            and Modifier.SHIFT in event.modifiers)
 
 
 class AppController:
@@ -29,7 +41,7 @@ class AppController:
         self.router = CommandRouter(self.prefs.double_press_ms)
         self.presenter: LessonPresenter | None = None
         self.lesson_index = 0
-        self.capture = WindowsCapture() if sys.platform == "win32" else None
+        self.capture = WindowsCapture() if WindowsCapture is not None else None
         self.capture_ok = False
         self.frame = None
         self.switch_requested = False
@@ -63,7 +75,12 @@ class AppController:
         if self.capture is not None:
             self.capture_ok = self.capture.start(self._from_capture)
         if self.capture_ok:
-            self.speech.speak("Keyboard captured. Press Escape three times to leave the lesson.")
+            if self.router.enabled:
+                self.speech.speak("Keyboard captured. Press Escape three times to leave. "
+                                  "Control Alt Shift X also leaves.")
+            else:
+                self.speech.speak("Keyboard captured. Function key commands are off in "
+                                  "this lesson. Press Control Alt Shift X to leave.")
         else:
             self.speech.speak("The keyboard is not captured. Keep this window in front.")
         if self.frame is not None:
@@ -94,6 +111,9 @@ class AppController:
 
     # -- keys -----------------------------------------------------------
     def on_key(self, event) -> bool:
+        if is_panic(event):
+            self.quit()
+            return True
         if self.presenter is None:
             return False
         if not self.router.enabled:

@@ -1,11 +1,24 @@
+from steadytype_client.main_controller import is_panic
 from steadytype_client.router import CommandRouter
-from steadytype_engine.keys import Key, KeyEvent, Side
+from steadytype_engine.keys import Key, KeyEvent, Modifier, Side
 
 
 def press(key, clock):
     return KeyEvent(kind="down", key=key, text=None, modifiers=frozenset(),
                     side=Side.NONE, is_repeat=False, scan_code=0,
                     timestamp=clock[0])
+
+
+def test_the_panic_chord_is_control_alt_shift_x():
+    clock = [0.0]
+
+    def chord(mods):
+        event = press(Key.X, clock)
+        return type(event)(**{**event.__dict__, "modifiers": frozenset(mods)})
+
+    assert is_panic(chord({Modifier.CONTROL, Modifier.ALT, Modifier.SHIFT}))
+    assert not is_panic(chord({Modifier.CONTROL, Modifier.ALT}))
+    assert not is_panic(chord({Modifier.CONTROL, Modifier.SHIFT}))
 
 
 def test_two_f2_presses_mean_next():

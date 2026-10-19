@@ -25,6 +25,7 @@ On first run, type a username and a password of at least ten characters, then pr
 - F3 twice: pick a lesson and a task.
 - F12 twice: my progress.
 - Escape three times: leave the lesson.
+- Control Alt Shift X: leave any lesson, including the function-key lesson.
 - Every command is also in the menus.
 
 The first lesson teaches the function keys, so its commands are switched off while it
