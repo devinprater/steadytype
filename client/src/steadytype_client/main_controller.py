@@ -8,6 +8,7 @@ from dataclasses import asdict, replace
 
 from steadytype_engine.keys import Key, KeyEvent, Modifier
 from steadytype_engine.lesson import Course, Lesson
+from steadytype_engine.names import localize
 from steadytype_engine.preferences import Preferences
 from steadytype_engine.scoring import Goals
 
@@ -93,10 +94,11 @@ class AppController:
         if self.capture_ok:
             if self.router.enabled:
                 self.speech.speak("Keyboard captured. Press Escape three times to leave. "
-                                  "Control Alt Shift X also leaves.")
+                                  + localize("Control Alt Shift X also leaves."))
             else:
                 self.speech.speak("Keyboard captured. Function key commands are off in "
-                                  "this lesson. Press Control Alt Shift X to leave.")
+                                  "this lesson. Press "
+                                  + localize("Control Alt Shift X") + " to leave.")
         else:
             self.speech.speak("The keyboard is not captured. Keep this window in front.")
         if self.frame is not None:

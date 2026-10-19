@@ -8,6 +8,7 @@ from typing import Protocol
 
 from steadytype_engine.commands import Display, EndLesson, SaveAttempt, Speak, Tone
 from steadytype_engine.lesson import Lesson
+from steadytype_engine.names import localize
 from steadytype_engine.preferences import Preferences
 from steadytype_engine.scoring import Goals
 from steadytype_engine.session import LessonSession, SessionState, result_commands
@@ -66,7 +67,7 @@ class LessonPresenter:
     def _run(self, commands) -> None:
         for command in commands:
             if isinstance(command, Speak):
-                self.speech.speak(command.text, command.interrupt)
+                self.speech.speak(localize(command.text), command.interrupt)
             elif isinstance(command, Tone):
                 if self.prefs.tones:
                     self.player.play(command.name)
