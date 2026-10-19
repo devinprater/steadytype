@@ -29,6 +29,14 @@ jobs:
           STEADYTYPE_DATA_DIR="$RUNNER_TEMP/st" python client/launcher.py --self-check --no-speech
       - name: Build
         run: cd client && pyinstaller steadytype.spec --noconfirm
+      - name: Place the Prism extension where the package looks for it
+        run: |
+          APP=client/dist/SteadyType.app
+          mkdir -p "$APP/Contents/Resources/prism/_native"
+          if [ -d "$APP/Contents/Frameworks/prism/_native" ]; then
+            cp -R "$APP/Contents/Frameworks/prism/_native/." "$APP/Contents/Resources/prism/_native/"
+          fi
+          ls -l "$APP/Contents/Resources/prism/_native" | head -10
       - name: Package
         run: |
           cd client/dist
