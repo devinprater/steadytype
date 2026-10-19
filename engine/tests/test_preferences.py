@@ -1,6 +1,12 @@
 import pytest
-
-from steadytype_engine.preferences import Echo, Feedback, Pitch, Preferences, TypingExperience, Verbosity
+from steadytype_engine.preferences import (
+    Echo,
+    Feedback,
+    Pitch,
+    Preferences,
+    TypingExperience,
+    Verbosity,
+)
 
 
 def test_defaults_match_the_spec():

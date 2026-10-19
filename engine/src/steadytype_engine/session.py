@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
+from datetime import UTC
 from enum import Enum
-from typing import Callable
 
 from .commands import Command, Display, EndLesson, Speak, Tone, ToneName
 from .hints import KEY_HINTS, spoken
@@ -58,9 +59,9 @@ class LessonSession:
 
     # -- inputs ---------------------------------------------------------
     def start(self) -> list[Command]:
-        from datetime import datetime, timezone
+        from datetime import datetime
 
-        self._started_at = datetime.now(timezone.utc)
+        self._started_at = datetime.now(UTC)
         self.state = SessionState.TASK_INTRO
         return [Speak(self.lesson.intro, interrupt=True),
                 Speak(self._task_intro(), interrupt=False)]
@@ -213,14 +214,14 @@ class LessonSession:
         return [Speak(self._task_intro(), interrupt=True), Display("next task")]
 
     # -- results --------------------------------------------------------
-    def finish(self) -> "AttemptRecord":
+    def finish(self) -> AttemptRecord:
         import uuid
-        from datetime import datetime, timezone
+        from datetime import datetime
 
-        from .scoring import AttemptRecord, KeyStat, stars
+        from .scoring import AttemptRecord, stars
 
         metrics = self.metrics
-        ended = datetime.now(timezone.utc)
+        ended = datetime.now(UTC)
         record = AttemptRecord(
             id=str(uuid.uuid4()),
             lesson_id=self.lesson.id,

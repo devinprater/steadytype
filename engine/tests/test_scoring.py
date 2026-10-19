@@ -1,5 +1,4 @@
 import pytest
-
 from steadytype_engine.scoring import Goals, Metrics, accuracy_star, speed_star, stars
 
 

@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Iterable, Sequence
 
 from .commands import Command, Display, EndLesson, SaveAttempt, Speak, Tone
-from .commands import ToneName
 from .keys import Key, KeyEvent, Side
 from .lesson import EndKey, Lesson, TaskKind
 from .loader import load_lesson

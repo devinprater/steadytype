@@ -31,9 +31,7 @@ def word_errors(typed: str, target: str) -> int:
     positions = max(len(typed_words), len(target_words))
     errors = 0
     for index in range(positions):
-        if index >= len(typed_words) or index >= len(target_words):
-            errors += 1
-        elif typed_words[index] != target_words[index]:
+        if index >= len(typed_words) or index >= len(target_words) or typed_words[index] != target_words[index]:
             errors += 1
     return errors
 

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import random
-from typing import Sequence
+from collections.abc import Sequence
 
 from ..buffer import TextBuffer
 from .base import GamePrompt
@@ -29,8 +29,8 @@ class SelectDeleteGame:
         buffer = TextBuffer(" ".join(modified))
         buffer.cursor = 0
         return GamePrompt(
-            intro=(f"This sentence has one word too many. Find it, select it "
-                   f"with Shift and the arrow keys, and delete it."),
+            intro=("This sentence has one word too many. Find it, select it "
+                   "with Shift and the arrow keys, and delete it."),
             buffer=buffer,
             target=self.target,
             help=f"The extra word starts at word {position + 1}.",

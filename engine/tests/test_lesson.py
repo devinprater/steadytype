@@ -1,7 +1,5 @@
-from pathlib import Path
 
 import pytest
-
 from steadytype_engine.lesson import Course, EndKey, Lesson, LessonError, TaskKind
 
 VALID = {

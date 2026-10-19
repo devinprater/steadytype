@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 import string
-from typing import Sequence
+from collections.abc import Sequence
 
 from ..buffer import TextBuffer
 from .base import GamePrompt

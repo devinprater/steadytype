@@ -4,10 +4,9 @@ from __future__ import annotations
 
 import argparse
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
-from .commands import Speak
 from .keys import Key, KeyEvent, Side
 from .lesson import Lesson
 from .loader import load_lesson

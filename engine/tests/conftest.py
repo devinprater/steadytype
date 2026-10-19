@@ -1,5 +1,4 @@
 import pytest
-
 from steadytype_engine.scoring import AttemptRecord, KeyStat
 
 

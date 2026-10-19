@@ -1,6 +1,5 @@
 import pytest
-
-from steadytype_engine.keys import Key, KeyEvent, Modifier, Side
+from steadytype_engine.keys import Key, KeyEvent, Side
 
 
 def test_letter_event_carries_the_produced_character():

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
 from enum import Enum
-from typing import Callable
 
 from .certification import CertificationResult, score_test
 from .commands import Command, Speak

@@ -1,9 +1,9 @@
 from pathlib import Path
 
+from steadytype_engine.commands import Speak, Tone
 from steadytype_engine.keys import Key, KeyEvent, Side
 from steadytype_engine.loader import load_lesson
 from steadytype_engine.transcript import format_command, run_script
-from steadytype_engine.commands import Speak, Tone
 
 ROOT = Path(__file__).resolve().parents[2]
 GOLDEN = Path(__file__).parent / "goldens" / "lesson_001.txt"

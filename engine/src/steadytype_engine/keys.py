@@ -138,5 +138,5 @@ class KeyEvent:
     scan_code: int
     timestamp: float
 
-    def with_repeat(self) -> "KeyEvent":
+    def with_repeat(self) -> KeyEvent:
         return replace(self, is_repeat=True)

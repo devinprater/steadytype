@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Mapping, Sequence
+from typing import Any
 
 
 class LessonError(Exception):
@@ -38,7 +39,7 @@ class Task:
     kind: TaskKind = TaskKind.TEXT
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> "Task":
+    def from_dict(cls, data: Mapping[str, Any]) -> Task:
         if not isinstance(data, Mapping):
             raise LessonError("tasks: each task must be a mapping")
         text = data.get("text")
@@ -69,7 +70,7 @@ class Lesson:
     tasks: tuple[Task, ...]
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> "Lesson":
+    def from_dict(cls, data: Mapping[str, Any]) -> Lesson:
         if not isinstance(data, Mapping):
             raise LessonError("lesson: expected a mapping")
 
@@ -132,7 +133,7 @@ class Course:
     lessons: tuple[Lesson, ...]
 
     @classmethod
-    def from_lessons(cls, schema: int, version: str, lessons: Sequence[Lesson]) -> "Course":
+    def from_lessons(cls, schema: int, version: str, lessons: Sequence[Lesson]) -> Course:
         if schema != 1:
             raise LessonError(f"schema: {schema!r} is not supported")
         if not isinstance(version, str) or not version:
@@ -146,7 +147,7 @@ class Course:
                    lessons=tuple(sorted(lessons, key=lambda lesson: lesson.ordinal)))
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> "Course":
+    def from_dict(cls, data: Mapping[str, Any]) -> Course:
         if not isinstance(data, Mapping):
             raise LessonError("course: expected a mapping")
         raw_lessons = data.get("lessons")

@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import random
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Protocol, Sequence
+from typing import Protocol
 
 from ..buffer import TextBuffer
 

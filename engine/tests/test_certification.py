@@ -1,5 +1,4 @@
 import pytest
-
 from steadytype_engine.certification import score_test, word_errors
 
 TARGET = "the quick brown fox jumps over the lazy dog"
