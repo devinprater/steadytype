@@ -11,13 +11,15 @@ from steadytype_engine.timed_test import TestState, TimedTest
 
 class TimedTestRunner:
     def __init__(self, passage: Passage, seconds: int, save: Callable, speak: Callable,
-                 lesson_id: int = 72, now: Callable[[], float] | None = None) -> None:
+                 lesson_id: int = 72, now: Callable[[], float] | None = None,
+                 display: Callable[[str, int], None] | None = None) -> None:
         kwargs = {"now": now} if now is not None else {}
         self.test = TimedTest(passage, seconds=seconds, **kwargs)
         self.passage = passage
         self.save = save
         self.speak = speak
         self.lesson_id = lesson_id
+        self.display = display
         self.done = False
 
     def start(self) -> None:
@@ -27,12 +29,14 @@ class TimedTestRunner:
         for command in self.test.start():
             self.speak(command.text, command.interrupt)
         self.test.state = TestState.RUNNING
+        self._show()
 
     def handle(self, event) -> None:
         if self.done:
             return
         for command in self.test.handle(event):
             self.speak(command.text, command.interrupt)
+        self._show()
         self._finish_if_over()
 
     def tick(self, now: float) -> None:
@@ -41,6 +45,10 @@ class TimedTestRunner:
         for command in self.test.tick(now):
             self.speak(command.text, command.interrupt)
         self._finish_if_over()
+
+    def _show(self) -> None:
+        if self.display is not None:
+            self.display(self.passage.text, len(self.test.typed))
 
     def _finish_if_over(self) -> None:
         if self.test.state is not TestState.FINISHED or self.done:

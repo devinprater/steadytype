@@ -200,8 +200,10 @@ class AppController:
 
         self.stop_lesson()
         passage = Passage(title="Certification practice", text=self.TEST_PASSAGE)
-        self.test_runner = TimedTestRunner(passage, seconds, save=self._save_attempt,
-                                           speak=self.speech.speak)
+        surface = self.frame.surface if self.frame is not None else None
+        self.test_runner = TimedTestRunner(
+            passage, seconds, save=self._save_attempt, speak=self.speech.speak,
+            display=surface.show if surface is not None else None)
         self.capture_ok = False
         if self.capture is not None:
             self.capture_ok = self.capture.start(self._from_capture)

@@ -10,12 +10,16 @@ def event(char):
                     side=None, is_repeat=False, scan_code=0, timestamp=0.0)
 
 
+DRAWN = []
+
+
 def make(seconds=60):
     passage = Passage(title="Test", text="the quick brown fox")
     saved = []
     runner = TimedTestRunner(passage, seconds, save=saved.append,
                              speak=lambda text, interrupt=False: SAID.append(text),
-                             now=lambda: CLOCK[0])
+                             now=lambda: CLOCK[0],
+                             display=lambda text, position: DRAWN.append((text, position)))
     return runner, saved
 
 
@@ -52,3 +56,16 @@ def test_time_running_out_finishes_the_test():
     runner.tick(CLOCK[0])
     assert runner.done
     assert len(saved) == 1
+
+
+def test_the_window_follows_what_has_been_typed():
+    global CLOCK, DRAWN
+    CLOCK, DRAWN = [0.0], []
+    runner, _ = make()
+    runner.start()
+    for char in "the qu":
+        runner.handle(event(char))
+    assert DRAWN, "the surface must be shown at least once"
+    text, position = DRAWN[-1]
+    assert text == "the quick brown fox"
+    assert position == len("the qu")
