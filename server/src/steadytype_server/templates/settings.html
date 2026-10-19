@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Settings for {{ klass.name }} — {{ school }}{% endblock %}
+{% block main %}
+<h1>Settings for {{ klass.name }}</h1>
+{% if saved %}<p role="status">Saved.</p>{% endif %}
+<form method="post" action="/classes/{{ klass.id }}/settings" class="stack">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label for="goal">Daily practice goal in minutes</label>
+  <p id="goal-help">Use 0 for no goal. In-person students usually finish in one
+    50 minute period. Distance students have until midnight.</p>
+  <input id="goal" name="goal_minutes" type="number" min="0" max="300"
+         value="{{ klass.goal_minutes }}" aria-describedby="goal-help">
+  <button type="submit">Save goal</button>
+</form>
+<p><a href="/classes/{{ klass.id }}">Back to {{ klass.name }}</a></p>
+{% endblock %}

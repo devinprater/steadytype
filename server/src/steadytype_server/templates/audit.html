@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Audit log — {{ klass.name }}{% endblock %}
+{% block main %}
+<h1>Audit log for {{ klass.name }}</h1>
+<p>Changes made by staff, newest first. The last 200 entries are shown.</p>
+<table>
+  <caption>Staff actions</caption>
+  <thead><tr><th scope="col">When</th><th scope="col">Who</th><th scope="col">Action</th>
+             <th scope="col">Target</th><th scope="col">Detail</th></tr></thead>
+  <tbody>
+  {% for entry in entries %}
+    <tr>
+      <td>{{ entry.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+      <td>{{ entry.actor_name }}</td>
+      <td>{{ entry.action }}</td>
+      <td>{{ entry.target }}</td>
+      <td>{{ entry.detail }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p><a href="/classes/{{ klass.id }}">Back to {{ klass.name }}</a></p>
+{% endblock %}

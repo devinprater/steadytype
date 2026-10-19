@@ -2,7 +2,13 @@
 {% block title %}{{ klass.name }} — {{ school }}{% endblock %}
 {% block main %}
 <h1>{{ klass.name }}</h1>
-<p><a href="/classes/{{ klass.id }}/export.csv">Download this class as CSV</a></p>
+<nav aria-label="Class tools">
+  <a href="/classes/{{ klass.id }}/settings">Settings</a>
+  <a href="/classes/{{ klass.id }}/certification">Certification</a>
+  <a href="/classes/{{ klass.id }}/audit">Audit log</a>
+  <a href="/classes/{{ klass.id }}/export.csv">Download as CSV</a>
+</nav>
+<p>Daily goal: {% if klass.goal_minutes %} {{ klass.goal_minutes }} minutes{% else %} none{% endif %}</p>
 <table>
   <caption>Students in {{ klass.name }}</caption>
   <thead>
@@ -11,6 +17,7 @@
       <th scope="col">Lessons</th>
       <th scope="col">Accuracy</th>
       <th scope="col">Words per minute</th>
+      <th scope="col">Minutes today</th>
       <th scope="col">Minutes this week</th>
       <th scope="col">Last active</th>
     </tr>
@@ -22,6 +29,7 @@
       <td>{{ row.lessons }}</td>
       <td>{{ "%.0f"|format(row.accuracy) }} percent</td>
       <td>{{ "%.0f"|format(row.wpm) }}</td>
+      <td>{{ "%.0f"|format(row.today_minutes) }}{% if klass.goal_minutes %} of {{ klass.goal_minutes }}{% endif %}</td>
       <td>{{ "%.0f"|format(row.minutes) }}</td>
       <td>{{ row.last.strftime("%Y-%m-%d %H:%M") if row.last else "Never" }}</td>
     </tr>

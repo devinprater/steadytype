@@ -38,6 +38,12 @@ def app(tmp_path):
             Attempt(id="a3", student_id=jane.id, lesson_id=3, kind="practice",
                     started_at=utcnow(), active_seconds=60, wpm=12, accuracy=85, stars=2,
                     body={}),
+            Attempt(id="t1", student_id=dana.id, lesson_id=72, kind="timed_test",
+                    started_at=utcnow(), active_seconds=300, wpm=55, accuracy=92,
+                    errors=8, body={}),
+            Attempt(id="t2", student_id=jane.id, lesson_id=72, kind="timed_test",
+                    started_at=utcnow(), active_seconds=300, wpm=40, accuracy=97,
+                    errors=2, body={}),
         ])
         db.commit()
         application.state.ids = {"morning": morning.id, "evening": evening.id,

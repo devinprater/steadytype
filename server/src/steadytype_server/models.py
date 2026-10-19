@@ -40,6 +40,7 @@ class Class(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(120))
     teacher_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    goal_minutes: Mapped[int] = mapped_column(Integer, default=40)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
     teacher: Mapped[User] = relationship()
@@ -86,3 +87,15 @@ class Device(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     last_seen_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     expires_at: Mapped[datetime] = mapped_column(DateTime)
+
+
+class AuditLog(Base):
+    __tablename__ = "audit_log"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    actor_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    actor_name: Mapped[str] = mapped_column(String(80), default="")
+    action: Mapped[str] = mapped_column(String(64))
+    target: Mapped[str] = mapped_column(String(120), default="")
+    detail: Mapped[str] = mapped_column(String(255), default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)

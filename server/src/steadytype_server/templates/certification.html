@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Certification — {{ klass.name }}{% endblock %}
+{% block main %}
+<h1>Certification practice for {{ klass.name }}</h1>
+<p>Alabama's Certificate of Proficiency for clerical work requires 50 net words
+per minute with 10 or fewer errors on a timed test. SteadyType can train and
+score that, but only an approved tester can issue the certificate.</p>
+<table>
+  <caption>Best timed test for each student</caption>
+  <thead>
+    <tr><th scope="col">Student</th><th scope="col">Best net words per minute</th>
+        <th scope="col">Errors</th><th scope="col">Result</th></tr>
+  </thead>
+  <tbody>
+  {% for row in rows %}
+    <tr>
+      <td>{{ row.student.display_name }}</td>
+      {% if row.wpm is none %}
+      <td>No timed test yet</td><td></td><td>Not measured</td>
+      {% else %}
+      <td>{{ "%.0f"|format(row.wpm) }}</td>
+      <td>{{ row.errors }}</td>
+      <td>{% if row.passed %}Meets the requirement{% else %}Not yet{% endif %}</td>
+      {% endif %}
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p><a href="/classes/{{ klass.id }}">Back to {{ klass.name }}</a></p>
+{% endblock %}
