@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import queue
+import threading
 from typing import Protocol
 
 
@@ -92,32 +94,72 @@ class PrismSpeech:
 
 
 class SaySpeech:
-    """macOS always has the system voice, even with no screen reader running."""
+    """macOS system voice, spoken one line at a time from a queue."""
 
     name = "macOS voice"
 
-    def __init__(self, rate: float = 180.0) -> None:
+    def __init__(self, rate: float = 210.0) -> None:
         self._rate = rate
-        self._process = None
+        self._voice: str | None = None
+        self._queue: "queue.Queue[str | None]" = queue.Queue()
+        self._current = None
+        self._lock = threading.Lock()
+        self._thread: threading.Thread | None = None
 
-    def speak(self, text: str, interrupt: bool = False) -> None:
+    def _spawn(self, text: str):
         import subprocess
 
+        command = ["/usr/bin/say", "-r", str(int(self._rate))]
+        if self._voice:
+            command += ["-v", self._voice]
+        return subprocess.Popen(command + [text])
+
+    def _worker(self) -> None:
+        while True:
+            text = self._queue.get()
+            if text is None:
+                return
+            with self._lock:
+                self._current = self._spawn(text)
+                process = self._current
+            try:
+                process.wait()
+            finally:
+                with self._lock:
+                    if self._current is process:
+                        self._current = None
+
+    def _ensure_worker(self) -> None:
+        if self._thread is None or not self._thread.is_alive():
+            self._thread = threading.Thread(target=self._worker, daemon=True)
+            self._thread.start()
+
+    def speak(self, text: str, interrupt: bool = False) -> None:
         if interrupt:
             self.stop()
-        self._process = subprocess.Popen(["/usr/bin/say", "-r", str(int(self._rate)), text])
+        self._ensure_worker()
+        self._queue.put(text)
 
     def braille(self, text: str) -> None:
         pass
 
     def configure(self, rate: float, pitch: float, volume: float,
                   voice: str | None) -> None:
-        self._rate = max(80.0, min(400.0, 180.0 * float(rate or 1)))
+        self._rate = max(120.0, min(400.0, 210.0 * float(rate or 1)))
+        if voice:
+            self._voice = voice
 
     def stop(self) -> None:
-        if self._process is not None and self._process.poll() is None:
-            self._process.terminate()
-        self._process = None
+        try:
+            while True:
+                self._queue.get_nowait()
+        except queue.Empty:
+            pass
+        with self._lock:
+            process = self._current
+            if process is not None and process.poll() is None:
+                process.terminate()
+            self._current = None
 
 
 def create_speech() -> SpeechEngine:
