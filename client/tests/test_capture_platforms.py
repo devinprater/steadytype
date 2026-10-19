@@ -32,7 +32,26 @@ def test_linux_keysyms_map_to_names():
     assert linux_key("Shift_L") is None
 
 
-def test_capture_reports_unavailable_without_its_library():
-    # Neither Quartz nor python-xlib is installed on this machine.
-    assert MacCapture().start(lambda event: None) is False
+def test_capture_reports_whether_it_can_hook_this_platform():
+    import sys
+
+    mac = MacCapture()
+    started = mac.start(lambda event: None)
+    if sys.platform == "darwin":
+        assert started is True
+        mac.stop()
+    else:
+        assert started is False
     assert LinuxCapture().start(lambda event: None) is False
+
+
+def test_mac_capture_works_when_quartz_is_installed():
+    import sys
+
+    import pytest
+
+    if sys.platform != "darwin":
+        pytest.skip("Quartz is macOS only")
+    capture = MacCapture()
+    capture.start(lambda event: None)
+    capture.stop()
