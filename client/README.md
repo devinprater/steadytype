@@ -11,9 +11,12 @@ cd client
 ../.venv/Scripts/python.exe -m steadytype_client
 ```
 
-On first run, type a username and a password of at least ten characters, then press
-**Create a local account**. The next run remembers the username and puts focus on
-**Sign in**, so Enter is enough.
+On first run, type a username in the form lastname.firstname, like prater.devin, then
+press **Create this student**. Students have no password. The next run remembers the
+username and puts focus on **Sign in**, so Enter is enough.
+
+Staff press **Staff sign in** and use their staff username and password. Staff can take
+lessons too, for testing or practice.
 
 `--no-speech` runs silently, which is useful for testing the windows.
 `--data-dir PATH` keeps the database somewhere else.

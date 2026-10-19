@@ -66,7 +66,11 @@ until 11:59 PM in the school's timezone.
 
 ### 4.1 Sign-in
 
-- **C-1** The client signs in with a username and password over HTTPS.
+- **C-1** Students sign in with a username only, in the form lastname.firstname, for
+  example prater.devin. Staff sign in with a username and a password. A **Staff sign
+  in** control on the same window switches between the two.
+- **C-1a** Staff accounts can take lessons too, for testing or practice, and their
+  attempts are saved like any student's.
 - **C-2** The sign-in screen offers two remembered states: remember the username
   only, or keep the user signed in.
 - **C-3** When a session is remembered, launching the client places focus on the
@@ -457,7 +461,11 @@ headers. Everything runs under Docker Compose on Ubuntu 24.04 LTS.
 
 ### 8.2 Authentication
 
-- Username and password for students and staff. No second factor.
+- Students sign in with a username only: lastname.firstname, no password. Staff sign
+  in with a username and a password. No second factor for anyone.
+- Student usernames are guessable, so a student account exposes only that student's own
+  progress. Staff pages and exports still require a staff sign-in. Student lookups are
+  rate limited per address, and staff can disable an account.
 - Argon2id, 64 MiB memory, 3 iterations, parallelism 4.
 - Minimum length 10, no composition rules, checked against a list of common
   passwords. Passphrases are encouraged in the help text.
@@ -470,8 +478,9 @@ headers. Everything runs under Docker Compose on Ubuntu 24.04 LTS.
   lasts 30 days and is renewed on use.
 - Every state-changing form carries a CSRF token.
 - Admins and teachers can see the audit log.
-- Teachers create student accounts and reset student passwords. Admins reset
-  teacher passwords. No email address is needed anywhere in the system.
+- Teachers create student accounts from a name, which produces the username. Students
+  have no password to reset. Admins create staff accounts and reset staff passwords. No
+  email address is needed anywhere in the system.
 - A password reset revokes every session and device for that user.
 - Everyone can sign out everywhere from the account page.
 

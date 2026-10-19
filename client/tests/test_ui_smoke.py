@@ -33,7 +33,7 @@ def test_main_frame_builds_with_menus(app, tmp_path):
     from steadytype_engine.loader import load_course
 
     store = Store(tmp_path / "s.db")
-    account = store.create_account("dana", "a long password", "Dana")
+    account = store.create_student("prater.devin")
     course = load_course(bundled_content())
     controller = AppController(store, account, AppPaths(tmp_path), FakeSpeech(),
                                NullPlayer(), course)
@@ -49,10 +49,10 @@ def test_sign_in_dialog_focuses_the_button_when_a_name_is_remembered(app, tmp_pa
     from steadytype_client.ui.signin import SignInDialog
 
     store = Store(tmp_path / "s.db")
-    store.create_account("dana", "a long password", "Dana")
-    store.set_remember("dana", True)
+    store.create_student("prater.devin")
+    store.set_remember("prater.devin", True)
     dialog = SignInDialog(None, SignInPresenter(store))
-    assert dialog.username.GetValue() == "dana"
+    assert dialog.username.GetValue() == "prater.devin"
     assert dialog.remember.GetValue() is True
     dialog.Destroy()
 
