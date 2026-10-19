@@ -166,6 +166,7 @@ def create_speech() -> SpeechEngine:
     try:
         return PrismSpeech()
     except Exception as error:
+        PrismSpeech.reason = f"{type(error).__name__}: {error}"
         import sys
 
         if sys.platform == "darwin":

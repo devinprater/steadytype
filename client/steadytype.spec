@@ -2,19 +2,22 @@
 #   pyinstaller steadytype.spec
 from pathlib import Path
 
-from PyInstaller.utils.hooks import collect_dynamic_libs
+from PyInstaller.utils.hooks import collect_all, collect_dynamic_libs
 
 repo = Path(SPECPATH).resolve().parent
+
+prism_datas, prism_binaries, prism_hidden = collect_all("prism")
 
 a = Analysis(
     ["launcher.py"],
     pathex=["src"],
-    binaries=collect_dynamic_libs("prism"),
+    binaries=collect_dynamic_libs("prism") + prism_binaries,
     datas=[
         (str(repo / "assets" / "sounds"), "assets/sounds"),
         (str(repo / "content"), "content"),
-    ],
-    hiddenimports=["prism", "prism._prism_cffi", "wx", "Quartz", "objc"],
+    ] + prism_datas,
+    hiddenimports=["prism", "prism._prism_cffi", "wx", "Quartz", "objc"] + prism_hidden,
+    module_collection_mode={"prism": "py"},
     hookspath=[],
     runtime_hooks=[],
     excludes=[],
