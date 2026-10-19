@@ -18,7 +18,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install ./engine
           pip install ./client --no-deps
-          pip install wxPython==4.3.2 prismatoid httpx pyinstaller pyobjc-framework-Quartz
+          pip install wxPython==4.3.2 prismatoid cffi httpx pyinstaller pyobjc-framework-Quartz
       - name: Test
         run: |
           pip install pytest httpx

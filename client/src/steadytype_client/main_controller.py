@@ -87,9 +87,13 @@ class AppController:
                       if lesson.id not in done), 0)
         self.lesson_index = index
         lesson = self.course.lessons[index]
-        self.speech.speak(f"Signed in as {self.account.display_name}. "
-                          f"Lesson {lesson.id}, {lesson.title}.", True)
-        self.start_lesson(lesson)
+        welcome = (f"Signed in as {self.account.display_name}. "
+                   f"Lesson {lesson.id}, {lesson.title}.")
+        self.speech.speak(welcome, True)
+        import wx
+
+        # Give the welcome time to be heard before the lesson starts speaking.
+        wx.CallLater(max(1500, len(welcome) * 55), self.start_lesson, lesson)
 
     # -- lessons --------------------------------------------------------
     def start_lesson(self, lesson: Lesson, start_task: int = 0) -> None:
