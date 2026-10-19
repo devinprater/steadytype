@@ -18,4 +18,4 @@ SPEAK: Your accuracy was 100 percent. Real accuracy, before corrections, was 100
 SPEAK: You typed 0 words per minute, in 0.0 minutes.
 SPEAK: You earned 1 out of 5 stars.
 SPEAK: Keep your fingers on the home row.
-SPEAK: Press Enter, the wide key at the right edge of the main row, for the next lesson. You can also press F2 twice.
+SPEAK: Press F2 twice for the next lesson, or F3 twice to choose another.

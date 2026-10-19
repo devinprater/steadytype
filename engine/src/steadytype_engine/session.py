@@ -95,9 +95,8 @@ class LessonSession:
 
     def repeat_instructions(self) -> list[Command]:
         if self.state is SessionState.LESSON_DONE:
-            return [Speak("The lesson is finished. Press Enter, the wide key at the "
-                          "right edge of the main row, for the next lesson, or F3 "
-                          "twice to choose another.", interrupt=True)]
+            return [Speak("The lesson is finished. Press F2 twice for the next "
+                          "lesson, or F3 twice to choose another.", interrupt=True)]
         task = self.lesson.tasks[self.task_index]
         if self.position >= self._target_length():
             return [Speak(f"Press {self._end_key_name()} to finish this one.",
@@ -307,6 +306,5 @@ def result_commands(record: AttemptRecord, prefs: Preferences | None = None) -> 
               f"in {minutes:.1f} minutes."),
         Speak(f"You earned {record.stars} out of 5 stars."),
         Speak(tip_for(record.key_stats)),
-        Speak("Press Enter, the wide key at the right edge of the main row, for the "
-              "next lesson. You can also press F2 twice."),
+        Speak("Press F2 twice for the next lesson, or F3 twice to choose another."),
     ]
