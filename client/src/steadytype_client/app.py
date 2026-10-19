@@ -37,6 +37,11 @@ def main(argv=None) -> int:
             return 2
         course = load_course(course_path)
         SignInPresenter(store)
+        from steadytype_client import main_controller
+
+        if not callable(getattr(main_controller, "make_capture", None)):
+            print("self-check failed: no keyboard capture factory")
+            return 3
         print(f"self-check ok: {len(course.lessons)} lessons, {len(store.attempts(0))} attempts")
         return 0
 

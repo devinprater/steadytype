@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import sys
 from dataclasses import asdict, replace
 
 from steadytype_engine.keys import Key, KeyEvent, Modifier
@@ -12,15 +11,11 @@ from steadytype_engine.names import localize
 from steadytype_engine.preferences import Preferences
 from steadytype_engine.scoring import Goals
 
+from steadytype_client.capture import make_capture
 from steadytype_client.prefs_json import from_dict, to_dict
 from steadytype_client.presenter import LessonPresenter
 from steadytype_client.router import FUNCTION_KEYS, CommandRouter
 from steadytype_client.sync import SyncClient, remote_token
-
-if sys.platform == "win32":
-    from steadytype_client.capture import make_capture
-else:  # pragma: no cover - the other platforms arrive in a later plan
-    WindowsCapture = None
 
 
 def is_panic(event: KeyEvent) -> bool:
