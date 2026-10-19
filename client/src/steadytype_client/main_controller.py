@@ -49,6 +49,8 @@ class AppController:
         self.frame = None
         self.switch_requested = False
         self.sync = None
+        self.test_runner = None
+        self.test_timer = None
         server = os.environ.get("STEADYTYPE_SERVER") or self.store.get_setting("server")
         if server:
             token = self.store.get_setting("sync_token")
@@ -137,6 +139,11 @@ class AppController:
         if is_panic(event):
             self.quit()
             return True
+        if self.test_runner is not None and not self.test_runner.done:
+            self.test_runner.handle(event)
+            if self.test_runner.done:
+                self._end_timed_test()
+            return True
         if self.presenter is None:
             return False
         if not self.router.enabled:
@@ -171,10 +178,63 @@ class AppController:
             self.show_progress()
         elif name == "preferences":
             self.open_preferences()
-        elif name in ("dictation", "test", "race"):
+        elif name == "test":
+            self.start_timed_test()
+        elif name in ("dictation", "race"):
             self.speech.speak("That kind of lesson is not in this version yet.")
 
     # -- windows --------------------------------------------------------
+    # -- timed test -----------------------------------------------------
+    TEST_PASSAGE = (
+        "A steady hand and an even pace will carry you through the whole page. "
+        "Read a few words ahead and let your fingers follow what your eyes have "
+        "already seen. If you make a mistake, keep going, because the clock "
+        "does not stop for corrections."
+    )
+
+    def start_timed_test(self, seconds: int = 300) -> None:
+        import wx
+        from steadytype_engine.dictation import Passage
+
+        from steadytype_client.timed import TimedTestRunner
+
+        self.stop_lesson()
+        passage = Passage(title="Certification practice", text=self.TEST_PASSAGE)
+        self.test_runner = TimedTestRunner(passage, seconds, save=self._save_attempt,
+                                           speak=self.speech.speak)
+        self.capture_ok = False
+        if self.capture is not None:
+            self.capture_ok = self.capture.start(self._from_capture)
+        if self.frame is not None:
+            self.frame.set_status("Timed test")
+            self.test_timer = wx.Timer(self.frame)
+            self.frame.Bind(wx.EVT_TIMER, self._on_test_tick, self.test_timer)
+            self.test_timer.Start(500)
+        if not self.capture_ok:
+            self.speech.speak("The keyboard is not captured. Keep this window in front.")
+        self.test_runner.start()
+
+    def _on_test_tick(self, event) -> None:
+        import time as _time
+
+        if self.test_runner is not None:
+            self.test_runner.tick(_time.monotonic())
+            if self.test_runner.done:
+                self._end_timed_test()
+
+    def _end_timed_test(self) -> None:
+        if self.test_timer is not None:
+            import wx
+
+            self.test_timer.Stop()
+            if self.frame is not None:
+                self.frame.Unbind(wx.EVT_TIMER, handler=self._on_test_tick)
+            self.test_timer = None
+        self.stop_lesson()
+        self.test_runner = None
+        if self.frame is not None:
+            self.frame.set_status("Timed test complete")
+
     def open_picker(self) -> None:
         import wx
 

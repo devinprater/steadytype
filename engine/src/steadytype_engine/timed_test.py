@@ -79,14 +79,14 @@ class TimedTest:
             return [Speak("You have one minute left.", interrupt=True)]
         return []
 
-    def attempt_record(self, lesson_id: int = 0):
+    def attempt_record(self, lesson_id: int = 0, result=None):
         """The row the dashboard needs, saved with kind timed_test."""
         import uuid
         from datetime import UTC, datetime
 
         from .scoring import AttemptRecord
 
-        result = self.finish()
+        result = result or self.finish()
         elapsed = max(0.0, min(float(self.seconds), self._now() - self._started))
         stamp = datetime.now(UTC).isoformat()
         return AttemptRecord(
