@@ -4,8 +4,8 @@ from steadytype_engine.commands import Speak
 from steadytype_engine.dictation import DictationSession, Passage
 from steadytype_engine.keys import Key, KeyEvent, Side
 from steadytype_engine.lesson import Lesson
-from steadytype_engine.preferences import Echo, Preferences
 from steadytype_engine.practice import PracticeClock
+from steadytype_engine.preferences import Echo, Preferences
 from steadytype_engine.scoring import Goals
 from steadytype_engine.session import LessonSession, SessionState
 from steadytype_engine.timed_test import TestState, TimedTest
