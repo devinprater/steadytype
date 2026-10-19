@@ -19,6 +19,14 @@ jobs:
           pip install ./engine
           pip install ./client --no-deps
           pip install wxPython==4.3.2 prismatoid httpx pyinstaller
+      - name: Test
+        run: |
+          pip install pytest httpx
+          pytest engine -q
+          pytest client -m "not ui" -q
+      - name: Self check
+        run: |
+          STEADYTYPE_DATA_DIR="$RUNNER_TEMP/st" python client/launcher.py --self-check --no-speech
       - name: Build
         run: cd client && pyinstaller steadytype.spec --noconfirm
       - name: Package

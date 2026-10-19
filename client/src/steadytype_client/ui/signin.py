@@ -122,6 +122,9 @@ class SignInDialog(wx.Dialog):
         except SignInError as error:
             self._fail(str(error))
             return
+        except Exception as error:  # noqa: BLE001 - a dialog must not kill the app
+            self._fail(f"Something went wrong: {error}")
+            return
         self.EndModal(wx.ID_OK)
 
     def _on_create(self, event) -> None:

@@ -87,12 +87,43 @@ class PrismSpeech:
         self._backend.stop()
 
 
+class SaySpeech:
+    """macOS always has the system voice, even with no screen reader running."""
+
+    name = "macOS voice"
+
+    def __init__(self, rate: float = 180.0) -> None:
+        self._rate = rate
+        self._process = None
+
+    def speak(self, text: str, interrupt: bool = False) -> None:
+        import subprocess
+
+        if interrupt:
+            self.stop()
+        self._process = subprocess.Popen(["/usr/bin/say", "-r", str(int(self._rate)), text])
+
+    def braille(self, text: str) -> None:
+        pass
+
+    def configure(self, rate: float, pitch: float, volume: float,
+                  voice: str | None) -> None:
+        self._rate = max(80.0, min(400.0, 180.0 * float(rate or 1)))
+
+    def stop(self) -> None:
+        if self._process is not None and self._process.poll() is None:
+            self._process.terminate()
+        self._process = None
+
+
 def create_speech() -> SpeechEngine:
     try:
         return PrismSpeech()
-    except SpeechUnavailable:
-        raise
     except Exception as error:
+        import sys
+
+        if sys.platform == "darwin":
+            return SaySpeech()
         raise SpeechUnavailable(
             "No screen reader or speech engine was found. "
             "Start your screen reader, or install a speech voice, then try again."

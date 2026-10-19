@@ -2,12 +2,14 @@
 #   pyinstaller steadytype.spec
 from pathlib import Path
 
+from PyInstaller.utils.hooks import collect_dynamic_libs
+
 repo = Path(SPECPATH).resolve().parent
 
 a = Analysis(
     ["launcher.py"],
     pathex=["src"],
-    binaries=[],
+    binaries=collect_dynamic_libs("prism"),
     datas=[
         (str(repo / "assets" / "sounds"), "assets/sounds"),
         (str(repo / "content"), "content"),

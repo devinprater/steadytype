@@ -19,10 +19,25 @@ def main(argv=None) -> int:
     parser.add_argument("--version", action="store_true")
     parser.add_argument("--no-speech", action="store_true")
     parser.add_argument("--data-dir", type=Path)
+    parser.add_argument("--self-check", action="store_true")
     args = parser.parse_args(argv)
 
     if args.version:
         print(f"steadytype-client {__version__}")
+        return 0
+
+    paths = AppPaths(args.data_dir) if args.data_dir else default_paths()
+    if args.self_check:
+        from steadytype_client.signin import SignInPresenter
+
+        store = Store(paths.database)
+        course_path = bundled_content()
+        if course_path is None:
+            print("self-check failed: no course files")
+            return 2
+        course = load_course(course_path)
+        SignInPresenter(store)
+        print(f"self-check ok: {len(course.lessons)} lessons, {len(store.attempts(0))} attempts")
         return 0
 
     import wx
@@ -33,7 +48,6 @@ def main(argv=None) -> int:
     from steadytype_client.ui.signin import SignInDialog
 
     app = wx.App(False)
-    paths = AppPaths(args.data_dir) if args.data_dir else default_paths()
     store = Store(paths.database)
 
     if args.no_speech:

@@ -30,7 +30,7 @@ class RaceRunner(TimedTestRunner):
         super().start()
 
     def _finish_if_over(self) -> None:
-        if self.done or not self.test.state.name == "FINISHED":
+        if self.done or self.test.state.name != "FINISHED":
             return
         self.done = True
         result = self.test.finish()
