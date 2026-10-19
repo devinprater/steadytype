@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import os
 import sys
-from dataclasses import replace
+from dataclasses import asdict, replace
 
 from steadytype_engine.keys import Key, KeyEvent, Modifier
 from steadytype_engine.lesson import Course, Lesson
@@ -13,6 +14,7 @@ from steadytype_engine.scoring import Goals
 from steadytype_client.prefs_json import from_dict, to_dict
 from steadytype_client.presenter import LessonPresenter
 from steadytype_client.router import FUNCTION_KEYS, CommandRouter
+from steadytype_client.sync import SyncClient, remote_token
 
 if sys.platform == "win32":
     from steadytype_client.capture.windows import WindowsCapture
@@ -45,6 +47,16 @@ class AppController:
         self.capture_ok = False
         self.frame = None
         self.switch_requested = False
+        self.sync = None
+        server = os.environ.get("STEADYTYPE_SERVER")
+        if server:
+            token = remote_token(server, account.username)
+            if token:
+                self.sync = SyncClient(server, token)
+                try:
+                    self.sync.upload(self.store.attempts(account.id))
+                except Exception:  # noqa: BLE001, S110 - offline is a normal state
+                    pass
 
     # -- preferences ----------------------------------------------------
     def _load_preferences(self) -> Preferences:
@@ -104,6 +116,11 @@ class AppController:
 
     def _save_attempt(self, record) -> None:
         self.store.save_attempt(self.account.id, record)
+        if self.sync is not None:
+            try:
+                self.sync.upload([asdict(record)])
+            except Exception:  # noqa: BLE001, S110 - the local copy is the source of truth
+                pass
 
     def _from_capture(self, event) -> None:
         if self.frame is not None:

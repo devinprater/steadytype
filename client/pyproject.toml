@@ -5,6 +5,7 @@ requires-python = ">=3.13"
 dependencies = [
   "steadytype-engine",
   "wxPython==4.3.2",
+  "httpx>=0.27",
 ]
 
 [project.optional-dependencies]
