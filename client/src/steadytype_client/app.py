@@ -64,6 +64,11 @@ def main(argv=None) -> int:
             wx.MessageBox(str(error), "SteadyType", wx.OK | wx.ICON_WARNING)
             speech = FakeSpeech()
 
+    try:
+        (paths.data_dir / "speech.log").write_text(f"{speech.name}\n", encoding="utf-8")
+    except OSError:
+        pass
+
     player = create_player(paths.sounds)
     course_path = bundled_content()
     if course_path is None:
