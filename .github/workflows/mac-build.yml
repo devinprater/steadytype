@@ -31,7 +31,8 @@ jobs:
         run: |
           SITE=$(python -c "import pathlib, prism; print(pathlib.Path(prism.__file__).parent)")
           ls "$SITE/_native"
-          cp "$SITE"/_native/*prism_cffi* "$SITE"/ || true
+          cp "$SITE"/_native/_prism_cffi* "$SITE"/_native/libprism.dylib "$SITE"/
+          ls "$SITE"
           python -c "import prism._prism_cffi as m; print('extension ok', m.__file__)"
       - name: Build
         run: cd client && pyinstaller steadytype.spec --noconfirm
