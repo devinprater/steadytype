@@ -101,7 +101,7 @@ class SaySpeech:
     def __init__(self, rate: float = 210.0) -> None:
         self._rate = rate
         self._voice: str | None = None
-        self._queue: "queue.Queue[str | None]" = queue.Queue()
+        self._queue: queue.Queue[str | None] = queue.Queue()
         self._current = None
         self._lock = threading.Lock()
         self._thread: threading.Thread | None = None

@@ -1,4 +1,3 @@
-import threading
 import time
 
 from steadytype_client.speech import SaySpeech
