@@ -50,6 +50,8 @@ class AppController:
         self.switch_requested = False
         self.sync = None
         self.test_runner = None
+        self.dictation_runner = None
+        self.dictation_index = 0
         self.test_timer = None
         server = os.environ.get("STEADYTYPE_SERVER") or self.store.get_setting("server")
         if server:
@@ -139,6 +141,11 @@ class AppController:
         if is_panic(event):
             self.quit()
             return True
+        if self.dictation_runner is not None and not self.dictation_runner.done:
+            self.dictation_runner.handle(event)
+            if self.dictation_runner.done:
+                self._end_dictation()
+            return True
         if self.test_runner is not None and not self.test_runner.done:
             self.test_runner.handle(event)
             if self.test_runner.done:
@@ -180,10 +187,38 @@ class AppController:
             self.open_preferences()
         elif name == "test":
             self.start_timed_test()
-        elif name in ("dictation", "race"):
-            self.speech.speak("That kind of lesson is not in this version yet.")
+        elif name == "dictation":
+            self.start_dictation()
+        elif name == "race":
+            self.speech.speak("Races are not in this version yet.")
 
     # -- windows --------------------------------------------------------
+    # -- dictation ------------------------------------------------------
+    def start_dictation(self) -> None:
+        from steadytype_client.dictation_runner import PASSAGES, DictationRunner
+
+        self.stop_lesson()
+        passage = PASSAGES[self.dictation_index % len(PASSAGES)]
+        self.dictation_index += 1
+        surface = self.frame.surface if self.frame is not None else None
+        self.dictation_runner = DictationRunner(
+            passage, self.prefs, save=self._save_attempt, speak=self.speech.speak,
+            display=surface.show if surface is not None else None)
+        self.capture_ok = False
+        if self.capture is not None:
+            self.capture_ok = self.capture.start(self._from_capture)
+        if self.frame is not None:
+            self.frame.set_status(f"Dictation: {passage.title}")
+        if not self.capture_ok:
+            self.speech.speak("The keyboard is not captured. Keep this window in front.")
+        self.dictation_runner.start()
+
+    def _end_dictation(self) -> None:
+        self.stop_lesson()
+        self.dictation_runner = None
+        if self.frame is not None:
+            self.frame.set_status("Dictation complete")
+
     # -- timed test -----------------------------------------------------
     TEST_PASSAGE = (
         "A steady hand and an even pace will carry you through the whole page. "
