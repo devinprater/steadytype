@@ -12,6 +12,7 @@ class ToneName:
     RACE_WARNING = "race_warning"
     RACE_END = "race_end"
     LESSON_DONE = "lesson_done"
+    GOAL_REACHED = "goal_reached"
 
 
 @dataclass(frozen=True)

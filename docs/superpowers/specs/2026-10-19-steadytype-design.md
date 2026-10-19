@@ -132,8 +132,8 @@ until 11:59 PM in the school's timezone.
   across machines where the backend supports them.
 - **C-23** Where the backend supports braille, Prism sends the current line to the
   display.
-- **C-24** Tones mark correct, incorrect, race start, ten seconds remaining, race
-  end, and lesson complete. Tones can be turned off.
+- **C-24** Tones mark correct, incorrect, race start, ten seconds remaining, race end,
+  lesson complete, and the daily practice goal. Tones can be turned off.
 - **C-25** If no speech backend is available, the client says so in a dialog with
   instructions and refuses to start a lesson silently.
 

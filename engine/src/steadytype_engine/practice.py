@@ -64,7 +64,7 @@ class PracticeClock:
             commands.append(Speak(warning_text, interrupt=False))
         if self.active_seconds >= goal_seconds and "goal" not in self._announced:
             self._announced.add("goal")
-            commands.append(Tone(ToneName.LESSON_DONE))
+            commands.append(Tone(ToneName.GOAL_REACHED))
             commands.append(Speak(
                 f"You have reached your goal of {self.goal_minutes} minutes. "
                 "You can keep practicing.", interrupt=False))

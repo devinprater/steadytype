@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SteadyType sound cues</title>
+<style>
+ body { max-width: 44rem; margin: 0 auto; padding: 1.5rem; font-family: system-ui, Segoe UI, sans-serif; line-height: 1.6; background: #fff; color: #111; }
+ h1 { font-size: 1.7rem; }
+ h2 { font-size: 1.25rem; margin-top: 2rem; border-bottom: 2px solid #ccc; padding-bottom: .2rem; }
+ li { margin: .9rem 0; }
+ audio { display: block; margin-top: .35rem; width: 100%; max-width: 28rem; }
+ .note { border-left: 6px solid #1e3a8a; background: #eff6ff; padding: .8rem 1rem; }
+ :focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+<h1>SteadyType sound cues</h1>
+<p>Each cue has two versions. The first is the clean synthesized tone. The second was
+generated with Stable Audio on this machine. Play both and tell me which set to use.</p>
+<div class="note">
+<p>The synthesized set is the default because every cue is under 600 milliseconds, which
+is what a lesson needs. Some model cues run over a second, so a wrong key would leave the
+student waiting. Individual model cues can still be swapped in where they are short enough.</p>
+</div>
+<h2>Cues</h2>
+<ul>
+<li><strong>Correct key</strong> (<code>correct</code>)
+  <audio controls preload="none" src="synth/correct.wav" aria-label="Correct key, synthesized"></audio>
+  <audio controls preload="none" src="model/correct.wav" aria-label="Correct key, model generated"></audio>
+  </li>
+<li><strong>Wrong key</strong> (<code>wrong</code>)
+  <audio controls preload="none" src="synth/wrong.wav" aria-label="Wrong key, synthesized"></audio>
+  <audio controls preload="none" src="model/wrong.wav" aria-label="Wrong key, model generated"></audio>
+  </li>
+<li><strong>Race start</strong> (<code>race_start</code>)
+  <audio controls preload="none" src="synth/race_start.wav" aria-label="Race start, synthesized"></audio>
+  <audio controls preload="none" src="model/race_start.wav" aria-label="Race start, model generated"></audio>
+  </li>
+<li><strong>Ten seconds left</strong> (<code>race_warning</code>)
+  <audio controls preload="none" src="synth/race_warning.wav" aria-label="Ten seconds left, synthesized"></audio>
+  <audio controls preload="none" src="model/race_warning.wav" aria-label="Ten seconds left, model generated"></audio>
+  </li>
+<li><strong>Race end</strong> (<code>race_end</code>)
+  <audio controls preload="none" src="synth/race_end.wav" aria-label="Race end, synthesized"></audio>
+  <audio controls preload="none" src="model/race_end.wav" aria-label="Race end, model generated"></audio>
+  </li>
+<li><strong>Lesson finished</strong> (<code>lesson_done</code>)
+  <audio controls preload="none" src="synth/lesson_done.wav" aria-label="Lesson finished, synthesized"></audio>
+  <audio controls preload="none" src="model/lesson_done.wav" aria-label="Lesson finished, model generated"></audio>
+  </li>
+<li><strong>Practice goal reached</strong> (<code>goal_reached</code>)
+  <audio controls preload="none" src="synth/goal_reached.wav" aria-label="Practice goal reached, synthesized"></audio>
+  <audio controls preload="none" src="model/goal_reached.wav" aria-label="Practice goal reached, model generated"></audio>
+  </li>
+</ul>
+</main>
+</body>
+</html>

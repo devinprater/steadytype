@@ -1,0 +1,44 @@
+{
+  "correct": {
+    "synth": "synth/correct.wav",
+    "model": "model/correct.wav",
+    "synth_ms": 88,
+    "model_ms": 84
+  },
+  "wrong": {
+    "synth": "synth/wrong.wav",
+    "model": "model/wrong.wav",
+    "synth_ms": 266,
+    "model_ms": 1343
+  },
+  "race_start": {
+    "synth": "synth/race_start.wav",
+    "model": "model/race_start.wav",
+    "synth_ms": 294,
+    "model_ms": 918
+  },
+  "race_warning": {
+    "synth": "synth/race_warning.wav",
+    "model": "model/race_warning.wav",
+    "synth_ms": 176,
+    "model_ms": 937
+  },
+  "race_end": {
+    "synth": "synth/race_end.wav",
+    "model": "model/race_end.wav",
+    "synth_ms": 314,
+    "model_ms": 1142
+  },
+  "lesson_done": {
+    "synth": "synth/lesson_done.wav",
+    "model": "model/lesson_done.wav",
+    "synth_ms": 522,
+    "model_ms": 958
+  },
+  "goal_reached": {
+    "synth": "synth/goal_reached.wav",
+    "model": "model/goal_reached.wav",
+    "synth_ms": 456,
+    "model_ms": 801
+  }
+}
