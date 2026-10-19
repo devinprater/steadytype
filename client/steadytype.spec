@@ -5,12 +5,12 @@ from pathlib import Path
 repo = Path(SPECPATH).resolve().parent
 
 a = Analysis(
-    ["src/steadytype_client/__main__.py"],
+    ["launcher.py"],
     pathex=["src"],
     binaries=[],
     datas=[
-        (str(repo.parent / "assets" / "sounds"), "assets/sounds"),
-        (str(repo.parent / "content"), "content"),
+        (str(repo / "assets" / "sounds"), "assets/sounds"),
+        (str(repo / "content"), "content"),
     ],
     hiddenimports=["prism", "prism._prism_cffi", "wx"],
     hookspath=[],
