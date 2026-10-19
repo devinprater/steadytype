@@ -7,7 +7,7 @@ lesson, and the practice goal.
 `manifest.json` maps each engine tone name to two files:
 
 - `synth/` — generated sine cues with a short attack and decay. These are the default.
-  They are 44.1 kHz, mono, 16-bit, between 88 and 522 ms, and identical on every platform.
+  They are 44.1 kHz, mono, 16-bit, between 82 and 413 ms, and identical on every platform.
 - `model/` — Stable Audio 3 Small SFX, generated locally with the prompts below, then
   trimmed to the first onset, faded, and peaked at -3 dBFS. These are alternatives for
   auditioning. Several are longer than a lesson should wait, so they are not the default.
@@ -18,13 +18,13 @@ lesson, and the practice goal.
 
 | Name | Meaning | Synth length |
 |---|---|---|
-| `correct` | A key was right | 88 ms |
-| `wrong` | A key was wrong | 266 ms |
-| `race_start` | The timed race begins | 294 ms |
-| `race_warning` | Ten seconds left in the race | 176 ms |
-| `race_end` | The race is over | 314 ms |
-| `lesson_done` | The lesson is finished | 522 ms |
-| `goal_reached` | The daily practice goal is met | 456 ms |
+| `correct` | A key was right | 82 ms |
+| `wrong` | A key was wrong | 204 ms |
+| `race_start` | The timed race begins | 236 ms |
+| `race_warning` | Ten seconds left in the race | 144 ms |
+| `race_end` | The race is over | 256 ms |
+| `lesson_done` | The lesson is finished | 413 ms |
+| `goal_reached` | The daily practice goal is met | 364 ms |
 
 ## Regenerating the model set
 

@@ -31,7 +31,7 @@ def test_default_sounds_are_short_mono_wavs():
             assert wav.getframerate() == 44100, tone
             assert wav.getsampwidth() == 2, tone
             milliseconds = wav.getnframes() / wav.getframerate() * 1000
-        assert 50 <= milliseconds <= 600, (tone, milliseconds)
+        assert 50 <= milliseconds <= 450, (tone, milliseconds)
 
 
 def test_every_sound_has_an_alternative_model_version():
