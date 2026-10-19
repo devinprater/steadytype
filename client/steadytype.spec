@@ -21,3 +21,17 @@ pyz = PYZ(a.pure)
 exe = EXE(pyz, a.scripts, [], exclude_binaries=True, name="SteadyType",
           console=False, icon=None)
 coll = COLLECT(exe, a.binaries, a.datas, name="SteadyType")
+
+import sys as _sys
+
+if _sys.platform == "darwin":
+    app = BUNDLE(
+        coll,
+        name="SteadyType.app",
+        bundle_identifier="org.devinprater.steadytype",
+        info_plist={
+            "NSHighResolutionCapable": True,
+            "LSMinimumSystemVersion": "11.0",
+            "NSHumanReadableCopyright": "GPL-3.0-or-later",
+        },
+    )
