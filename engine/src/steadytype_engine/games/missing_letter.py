@@ -10,20 +10,24 @@ from .base import GamePrompt
 
 
 class MissingLetterGame:
+    def __init__(self) -> None:
+        self.target = ""
+
     def make(self, rng: random.Random, words: Sequence[str]) -> GamePrompt:
-        target = rng.choice(list(words))
-        index = rng.randrange(len(target))
-        missing = target[index]
-        text = target[:index] + target[index + 1:]
+        self.target = rng.choice(list(words))
+        index = rng.randrange(len(self.target))
+        text = self.target[:index] + self.target[index + 1:]
         buffer = TextBuffer(text)
         buffer.cursor = 0
+        before = self.target[index - 1] if index else None
+        position = f"after {before}" if before else "at the start"
         return GamePrompt(
-            intro=(f"The word is {target}, with one letter missing. "
+            intro=(f"The word is {self.target}, with one letter missing. "
                    f"Move to the gap and type the missing letter."),
             buffer=buffer,
-            target=target,
-            help=f"The missing letter is the one after {target[index - 1] if index else 'the start'}.",
+            target=self.target,
+            help=f"The gap is {position} of the word.",
         )
 
     def is_complete(self, buffer: TextBuffer) -> bool:
-        return buffer.text == getattr(buffer, "target", None) or False
+        return buffer.text == self.target
