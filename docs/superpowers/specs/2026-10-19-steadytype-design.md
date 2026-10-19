@@ -32,6 +32,11 @@ builds them as one modern cross-platform system.
 A student may use a screen reader, magnification, or neither. The program is
 speech-first, but every screen is also a normal accessible window.
 
+Each student is enrolled as **in person** or **distance**. The teaching is the same.
+The difference is how the day is used: an in-person student works inside a class
+period, while a distance student may spread the same amount of work across the day
+until 11:59 PM in the school's timezone.
+
 ## 3. Scope of the first release
 
 **In scope**
@@ -174,6 +179,9 @@ Stored per student and synced:
   completed lesson, average accuracy over the last ten attempts, average speed, best
   speed, practice time today and this week, the daily goal and progress toward it, and
   the five keys with the most errors.
+- **C-33a** A distance student is told the time left in the day, for example "25 of 40
+  minutes today, and 4 hours left." An in-person student sees the same numbers with the
+  time of day instead.
 - **C-34** Opening it speaks a short summary. The details are then read with Tab and
   the arrow keys like any other list.
 - **C-35** It works offline from local records and marks attempts that have not synced
@@ -190,8 +198,10 @@ Stored per student and synced:
   its own halfway point and warns at one fifth remaining.
 - **C-39** After the goal is met the student may keep practicing. The client says so
   once and then stops announcing time.
-- **C-40** The goal resets at local midnight in the school's timezone and applies the
-  same way to distance students.
+- **C-40** The goal is a day's work, not a sitting. It resets at 11:59 PM in the
+  school's timezone and applies the same way to in-person and distance students. An
+  in-person student normally finishes inside one period; a distance student may finish
+  in one block or several blocks across the day, and may exceed the goal.
 - **C-41** A preference can turn the spoken time announcements off while keeping the
   goal and the display.
 
@@ -494,7 +504,8 @@ display_name, disabled_at, must_change_password, created_at, last_login_at.
 
 `classes` — id, name, teacher_id, archived_at, created_at.
 
-`enrollments` — class_id, student_id, created_at. Primary key on both.
+`enrollments` — class_id, student_id, delivery_mode (`in_person` or `distance`),
+created_at. Primary key on class_id and student_id.
 
 `courses` — id, slug, title, version, published.
 
@@ -551,9 +562,10 @@ task works with it disabled.
 
 - **Sign in.**
 - **Classes:** every class the user may see, with student count and last activity.
-- **Class scoreboard:** one row per student — lessons completed, stars, average
-  accuracy, average speed, practice minutes today against the class goal, practice
-  time this week, best certification score, last active. Sortable by link.
+- **Class scoreboard:** one row per student — delivery mode, lessons completed, stars,
+  average accuracy, average speed, practice minutes today against the class goal,
+  practice time this week, best certification score, last active. Sortable by link and
+  filterable by delivery mode.
 - **Progress grid:** students down the side, lessons across the top. Each cell reads
   as text, for example "4 stars, 92 percent, 18 words per minute". A legend explains
   the pattern without relying on color.
@@ -568,8 +580,9 @@ task works with it disabled.
   daily practice minutes with a default of 40 and a "none" option; certification
   target net speed and maximum errors; lesson range; archive.
 - **People:** add a student, reset a password, disable an account, move a student,
-  add a teacher (admin only). The form suggests a username from the display name
-  and a number, and the teacher may change it before saving.
+  set a student as in person or distance, add a teacher (admin only). The form suggests
+  a username from the display name and a number, and the teacher may change it before
+  saving.
 - **Audit log** (admin).
 - **Account:** change own password, sign out everywhere.
 
