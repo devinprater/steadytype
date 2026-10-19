@@ -41,6 +41,16 @@ class SignInDialog(wx.Dialog):
         self.password_label.Show(False)
         self.password.Show(False)
 
+        self.server_label = wx.StaticText(panel, label="School server address, optional")
+        self.server_address = wx.TextCtrl(panel, value=presenter.server_address())
+        self.server_address.SetName("School server address")
+        self.server_help = wx.StaticText(
+            panel, label="For example, https://typing.yourschool.org. "
+                         "Leave it blank to practise offline.")
+        sizer.Add(self.server_label, 0, wx.LEFT | wx.TOP, 12)
+        sizer.Add(self.server_address, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 12)
+        sizer.Add(self.server_help, 0, wx.LEFT | wx.RIGHT | wx.BOTTOM, 12)
+
         self.remember = wx.CheckBox(panel, label="Remember my username")
         self.remember.SetValue(True)
         sizer.Add(self.remember, 0, wx.ALL, 12)
@@ -103,6 +113,7 @@ class SignInDialog(wx.Dialog):
         username = self.username.GetValue()
         remember = self.remember.GetValue()
         try:
+            self.presenter.set_server_address(self.server_address.GetValue())
             if self.staff_mode:
                 self.account = self.presenter.sign_in_staff(
                     username, self.password.GetValue(), remember)
@@ -115,6 +126,7 @@ class SignInDialog(wx.Dialog):
 
     def _on_create(self, event) -> None:
         try:
+            self.presenter.set_server_address(self.server_address.GetValue())
             self.account = self.presenter.create_student(self.username.GetValue())
         except SignInError as error:
             self._fail(str(error))

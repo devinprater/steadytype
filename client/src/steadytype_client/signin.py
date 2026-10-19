@@ -9,6 +9,7 @@ from __future__ import annotations
 import re
 
 from steadytype_client.store import Account, Store
+from steadytype_client.sync import normalize_server, remote_staff_token, remote_token
 
 USERNAME = re.compile(r"^[a-z][a-z'\-]*\.[a-z][a-z'\-]*$")
 
@@ -29,8 +30,26 @@ def check_username(username: str) -> str:
 
 
 class SignInPresenter:
-    def __init__(self, store: Store) -> None:
+    def __init__(self, store: Store, remote=None, remote_staff=None) -> None:
         self.store = store
+        self._remote = remote or remote_token
+        self._remote_staff = remote_staff or remote_staff_token
+
+    # -- the school server ----------------------------------------------
+    def server_address(self) -> str:
+        return self.store.get_setting("server") or ""
+
+    def set_server_address(self, raw: str) -> str:
+        try:
+            server = normalize_server(raw)
+        except ValueError as error:
+            raise SignInError(str(error)) from error
+        self.store.set_setting("server", server)
+        return server
+
+    def _remember_token(self, server: str, token: str) -> None:
+        self.store.set_setting("sync_server", server)
+        self.store.set_setting("sync_token", token)
 
     def remembered(self) -> str | None:
         return self.store.remembered_username()
@@ -41,6 +60,12 @@ class SignInPresenter:
     def sign_in_student(self, username: str, remember: bool = True) -> Account:
         normalized = check_username(username)
         account = self.store.find_student(normalized)
+        server = self.server_address()
+        if account is None and server:
+            token = self._remote(server, normalized)
+            if token:
+                account = self.store.create_student(normalized)
+                self._remember_token(server, token)
         if account is None:
             raise SignInError("That username was not found. Ask your teacher.")
         self.store.set_remember(account.username, remember)
@@ -50,6 +75,15 @@ class SignInPresenter:
                       remember: bool = True) -> Account:
         normalized = normalize_username(username)
         account = self.store.verify_staff(normalized, password)
+        server = self.server_address()
+        if account is None and server:
+            token = self._remote_staff(server, normalized, password)
+            if token:
+                try:
+                    account = self.store.create_staff(normalized, password)
+                except ValueError:
+                    account = self.store.verify_staff(normalized, password)
+                self._remember_token(server, token)
         if account is None:
             raise SignInError("That staff username and password do not match.")
         self.store.set_remember(account.username, remember)

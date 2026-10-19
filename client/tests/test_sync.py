@@ -1,4 +1,10 @@
-from steadytype_client.sync import SyncClient, remote_token
+import pytest
+from steadytype_client.sync import (
+    SyncClient,
+    normalize_server,
+    remote_staff_token,
+    remote_token,
+)
 
 
 class Response:
@@ -52,3 +58,17 @@ def test_an_unreachable_server_returns_no_token():
             raise __import__("httpx").ConnectError("no route")
 
     assert remote_token("https://school.test", "prater.devin", client=Broken()) is None
+
+
+def test_server_addresses_are_normalized():
+    assert normalize_server(" https://school.test/ ") == "https://school.test"
+    assert normalize_server("") == ""
+    with pytest.raises(ValueError, match="https://"):
+        normalize_server("school.test")
+
+
+def test_staff_tokens_come_from_the_staff_endpoint():
+    fake = Client({"token": "staff-tok"})
+    assert remote_staff_token("https://school.test", "owner", "pw", client=fake) == "staff-tok"
+    assert fake.calls[0][0] == "https://school.test/api/v1/auth/staff"
+    assert fake.calls[0][1] == {"username": "owner", "password": "pw"}

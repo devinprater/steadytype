@@ -9,6 +9,28 @@ class SyncUnavailable(Exception):
     pass
 
 
+def normalize_server(raw: str) -> str:
+    """An empty value means offline only. Otherwise it must be a full address."""
+    value = raw.strip().rstrip("/")
+    if not value:
+        return ""
+    if not value.startswith(("http://", "https://")):
+        raise ValueError("Use an address like https://typing.yourschool.org")
+    return value
+
+
+def remote_staff_token(base_url: str, username: str, password: str, client=None) -> str | None:
+    try:
+        poster = client.post if client is not None else httpx.post
+        response = poster(f"{base_url.rstrip('/')}/api/v1/auth/staff",
+                          json={"username": username, "password": password}, timeout=10)
+        if response.status_code != 200:
+            return None
+        return response.json().get("token")
+    except Exception:  # noqa: BLE001 - treat unreachable as offline
+        return None
+
+
 def remote_token(base_url: str, username: str, client=None) -> str | None:
     """Students sign in with a username; a failure means practice offline."""
     try:

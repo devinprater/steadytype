@@ -48,9 +48,13 @@ class AppController:
         self.frame = None
         self.switch_requested = False
         self.sync = None
-        server = os.environ.get("STEADYTYPE_SERVER")
+        server = os.environ.get("STEADYTYPE_SERVER") or self.store.get_setting("server")
         if server:
-            token = remote_token(server, account.username)
+            token = self.store.get_setting("sync_token")
+            if self.store.get_setting("sync_server") != server:
+                token = None
+            if not token:
+                token = remote_token(server, account.username)
             if token:
                 self.sync = SyncClient(server, token)
                 try:

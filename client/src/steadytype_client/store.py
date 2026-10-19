@@ -144,6 +144,21 @@ class Store:
             return None
         return row["value"]
 
+    # -- settings -------------------------------------------------------
+    def set_setting(self, key: str, value: str) -> None:
+        with self._lock, self._db:
+            self._db.execute(
+                "INSERT INTO settings (key, value) VALUES (?, ?)"
+                " ON CONFLICT(key) DO UPDATE SET value = excluded.value", (key, value))
+
+    def get_setting(self, key: str) -> str | None:
+        with self._lock:
+            row = self._db.execute(
+                "SELECT value FROM settings WHERE key = ?", (key,)).fetchone()
+        if row is None or not row["value"]:
+            return None
+        return row["value"]
+
     # -- preferences ----------------------------------------------------
     def save_preferences(self, account_id: int, body: dict) -> None:
         with self._lock, self._db:
