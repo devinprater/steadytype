@@ -8,7 +8,7 @@ kind: keyboarding
 end_key: space
 repeat: 4
 intro: >-
-  This is lesson 51. Numbers come from the top row. Reach, press, and return.
+  3 and 8 are on the number row. Reach with the fingers that own the keys below them, then come home. Reach from the home row and come straight back. If you miss a key, keep going. The next one matters more than the last. Numbers come from the top row. Reach, press, and return.
 tasks:
   - text: "45 54 44 55"
   - text: "67 76 66 77"

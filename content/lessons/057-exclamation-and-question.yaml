@@ -8,7 +8,7 @@ kind: keyboarding
 end_key: space
 repeat: 4
 intro: >-
-  This is lesson 57. Symbols use Shift. Learn one pair at a time.
+  The exclamation mark is Shift and the 1 key. The question mark is Shift and the slash key, at the bottom right. Symbols mean Shift. Learn the pair, then use it in a line. Only the finger that reaches should move. The rest of your hand stays home.
 tasks:
   - text: "!! ?? !? ?!"
   - text: "!!"

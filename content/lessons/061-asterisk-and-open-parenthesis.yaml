@@ -8,7 +8,7 @@ kind: keyboarding
 end_key: space
 repeat: 4
 intro: >-
-  This is lesson 61. Symbols use Shift. Learn one pair at a time.
+  * uses Shift. Learn where it sits, then press it without looking down. The open parenthesis is Shift and 9. Symbols mean Shift. Learn the pair, then use it in a line. If you miss a key, keep going. The next one matters more than the last. Symbols use Shift. Learn one pair at a time.
 tasks:
   - text: "!! ?? !? ?!"
   - text: "@@ ## @# #@"

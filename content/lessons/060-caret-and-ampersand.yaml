@@ -8,7 +8,7 @@ kind: keyboarding
 end_key: space
 repeat: 4
 intro: >-
-  This is lesson 60. Symbols use Shift. Learn one pair at a time.
+  ^ uses Shift. Learn where it sits, then press it without looking down. & uses Shift. Learn where it sits, then press it without looking down. Symbols mean Shift. Learn the pair, then use it in a line. Slow and even beats fast and jumpy. Symbols use Shift. Learn one pair at a time.
 tasks:
   - text: "!! ?? !? ?!"
   - text: "@@ ## @# #@"

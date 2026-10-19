@@ -7,6 +7,72 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 LESSONS = ROOT / "content" / "lessons"
 
+KEY_TIPS = {
+ "a": "A is under your left little finger, on the home row.",
+ "s": "S is under your left ring finger.",
+ "d": "D is under your left middle finger.",
+ "f": "F is under your left index finger. It has a small bump.",
+ "j": "J is under your right index finger. It has a bump too, so your hands can find home without looking.",
+ "k": "K is under your right middle finger.",
+ "l": "L is under your right ring finger.",
+ ";": "The semicolon is at the right end of the home row, under your right little finger.",
+ "e": "E sits on the top row, above D. Reach up with your left middle finger and come straight back.",
+ "i": "I sits above K. Reach up with your right middle finger.",
+ "r": "R is above F. Your left index finger reaches up and slightly left.",
+ "u": "U is above J. Your right index finger reaches up and slightly left.",
+ "t": "T is above F and G. The left index finger moves up and right.",
+ "y": "Y is above J and H. The right index finger moves up and left.",
+ "w": "W is above S. Reach up with the left ring finger.",
+ "o": "O is above L. Reach up with the right ring finger.",
+ "q": "Q is at the far left of the top row, above A. The left little finger reaches up.",
+ "p": "P is at the far right of the top row, above the semicolon. The right little finger reaches up.",
+ "v": "V is below F. Curl the left index finger down.",
+ "m": "M is below J. Curl the right index finger down.",
+ "c": "C is below D. The left middle finger drops down.",
+ "n": "N is below J. The right index finger reaches down and left.",
+ "x": "X is below S. Drop the left ring finger down.",
+ "z": "Z is at the bottom left, below A. The left little finger curls down.",
+ "b": "B is below F and G. The left index finger reaches down and right.",
+ "g": "G is on the home row between F and H. The left index finger slides right.",
+ "h": "H is between G and J. The right index finger slides left.",
+ ",": "The comma is to the right of M. Press it with the right middle finger.",
+ ".": "The period is to the right of the comma. The right ring finger presses it.",
+ "?": "The question mark is Shift and the slash key, at the bottom right.",
+ "!": "The exclamation mark is Shift and the 1 key.",
+ "'": "The apostrophe is to the right of the semicolon, under the right little finger.",
+ '"': "The quotation mark is Shift and the apostrophe key.",
+ ":": "The colon is Shift and the semicolon.",
+ "-": "The hyphen is to the right of the 0 key.",
+ "(": "The open parenthesis is Shift and 9.",
+ ")": "The close parenthesis is Shift and 0.",
+ "shift": "Shift is held with the little finger on the side opposite the letter.",
+}
+for digit in "0123456789":
+    KEY_TIPS[digit] = f"{digit} is on the number row. Reach with the finger that owns the key below it, then come home."
+
+for symbol in "@#$%^&*_=+[]{}|/\\":
+    KEY_TIPS.setdefault(symbol, f"{symbol} uses Shift. Learn where it sits, then press it without looking down.")
+
+MODE_TIPS = {
+ "keys": "Press it, say its name in your head, and return to the home row.",
+ "words": "Now use it inside real words. Keep your eyes on the screen, not your hands.",
+ "phrases": "Two words at a time. Let the space bar carry you between them.",
+ "sentences": "Whole sentences now. Read a little ahead while your fingers follow.",
+ "punctuated": "Punctuation belongs to the sentence. Type it without breaking your rhythm.",
+ "capitals": "Hold Shift with the little finger opposite the letter, press, then let go.",
+ "names": "Names start with a capital. Shift, letter, release.",
+ "numbers": "Reach from the home row and come straight back.",
+ "symbols": "Symbols mean Shift. Learn the pair, then use it in a line.",
+}
+
+ENCOURAGEMENT = [
+ "Slow and even beats fast and jumpy.",
+ "If you miss a key, keep going. The next one matters more than the last.",
+ "Only the finger that reaches should move. The rest of your hand stays home.",
+ "Accuracy first. Speed arrives on its own.",
+ "A short pause and a shake of the hands every few minutes keeps them loose.",
+]
+
 UNITS = {
  1: "Keep your fingers on the home row and come back to it after every reach.",
  2: "Reach up with one finger, then return to the home row.",
@@ -203,6 +269,20 @@ def pad_tasks(tasks, teaches, chars):
     return tasks
 
 
+def build_intro(id_, unit, teaches, mode):
+    """A teacher's voice, not a template: where the key is, why, and how to practise."""
+    if teaches and all(key.isdigit() for key in teaches):
+        tips = [f"{' and '.join(teaches)} are on the number row. Reach with the "
+                "fingers that own the keys below them, then come home."]
+    else:
+        tips = [KEY_TIPS[key] for key in teaches if key in KEY_TIPS][:2]
+    body = " ".join(tips) if tips else "You know these keys already."
+    intro = f"{body} {MODE_TIPS[mode]} {ENCOURAGEMENT[id_ % len(ENCOURAGEMENT)]}"
+    if len(intro) < 240:
+        intro = f"{intro} {UNITS[unit]}"
+    return intro
+
+
 def slug(title):
     return re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
 
@@ -230,7 +310,7 @@ def main():
             "schema": 1, "id": id_, "unit": unit, "ordinal": id_, "title": title,
             "teaches": teaches, "kind": "keyboarding", "end_key": "space",
             "repeat": 4,
-            "intro": f"This is lesson {id_}. " + UNITS[unit],
+            "intro": build_intro(id_, unit, teaches, mode),
             "tasks": tasks,
         }
         name = f"{id_:03d}-{slug(title)}.yaml"

@@ -8,7 +8,7 @@ kind: keyboarding
 end_key: space
 repeat: 4
 intro: >-
-  This is lesson 45. Punctuation is a normal key press. Say the mark to yourself as you type.
+  The quotation mark is Shift and the apostrophe key. Punctuation belongs to the sentence. Type it without breaking your rhythm. Slow and even beats fast and jumpy. Punctuation is a normal key press. Say the mark to yourself as you type.
 tasks:
   - text: "well, that is done."
   - text: "it's a good day."

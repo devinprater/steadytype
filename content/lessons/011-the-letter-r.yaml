@@ -8,7 +8,7 @@ kind: keyboarding
 end_key: space
 repeat: 4
 intro: >-
-  This is lesson 11. Reach up with one finger, then return to the home row.
+  R is above F. Your left index finger reaches up and slightly left. Press it, say its name in your head, and return to the home row. If you miss a key, keep going. The next one matters more than the last. Reach up with one finger, then return to the home row.
 tasks:
   - text: "r"
   - text: "rr"

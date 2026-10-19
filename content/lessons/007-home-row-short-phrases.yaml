@@ -8,7 +8,7 @@ kind: keyboarding
 end_key: space
 repeat: 4
 intro: >-
-  This is lesson 7. Keep your fingers on the home row and come back to it after every reach.
+  The semicolon is at the right end of the home row, under your right little finger. Two words at a time. Let the space bar carry you between them. Only the finger that reaches should move. The rest of your hand stays home. Keep your fingers on the home row and come back to it after every reach.
 tasks:
   - text: "a as"
   - text: ";;"
