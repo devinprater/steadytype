@@ -83,6 +83,14 @@ class MacCapture:
         except ImportError:
             return False
         self._q = Quartz
+        if not Quartz.AXIsProcessTrusted():
+            # Without this the tap exists but macOS drops every event, silently.
+            try:
+                Quartz.AXIsProcessTrustedWithOptions(
+                    {Quartz.kAXTrustedCheckOptionPrompt: True})
+            except Exception:  # noqa: BLE001 - older systems lack the options call
+                pass
+            return False
         mask = (Quartz.CGEventMaskBit(Quartz.kCGEventKeyDown)
                 | Quartz.CGEventMaskBit(Quartz.kCGEventKeyUp)
                 | Quartz.CGEventMaskBit(Quartz.kCGEventFlagsChanged))

@@ -117,10 +117,19 @@ class AppController:
                                   "this lesson. Press "
                                   + localize("Control Alt Shift X") + " to leave.")
         else:
-            self.speech.speak("The keyboard is not captured. Keep this window in front.")
+            self.speech.speak(self._capture_failed_message())
         if self.frame is not None:
             self.frame.set_status(lesson.title)
         self.presenter.start()
+
+    def _capture_failed_message(self) -> str:
+        import sys
+
+        if sys.platform == "darwin":
+            return ("The keyboard is not captured. Open System Settings, Privacy and "
+                    "Security, Accessibility, and turn on SteadyType. Then start the app "
+                    "again.")
+        return "The keyboard is not captured. Keep this window in front."
 
     def next_lesson(self) -> None:
         if not self.course.lessons:
@@ -240,7 +249,7 @@ class AppController:
         if self.frame is not None:
             self.frame.set_status("Game")
         if not self.capture_ok:
-            self.speech.speak("The keyboard is not captured. Keep this window in front.")
+            self.speech.speak(self._capture_failed_message())
         self.game_runner.start()
 
     def _end_game(self) -> None:
@@ -266,7 +275,7 @@ class AppController:
         if self.frame is not None:
             self.frame.set_status(f"Dictation: {passage.title}")
         if not self.capture_ok:
-            self.speech.speak("The keyboard is not captured. Keep this window in front.")
+            self.speech.speak(self._capture_failed_message())
         self.dictation_runner.start()
 
     def _end_dictation(self) -> None:
@@ -304,7 +313,7 @@ class AppController:
             self.frame.Bind(wx.EVT_TIMER, self._on_test_tick, self.test_timer)
             self.test_timer.Start(500)
         if not self.capture_ok:
-            self.speech.speak("The keyboard is not captured. Keep this window in front.")
+            self.speech.speak(self._capture_failed_message())
         self.test_runner.start()
 
     def start_race(self) -> None:
@@ -326,7 +335,7 @@ class AppController:
             self.frame.Bind(wx.EVT_TIMER, self._on_test_tick, self.test_timer)
             self.test_timer.Start(500)
         if not self.capture_ok:
-            self.speech.speak("The keyboard is not captured. Keep this window in front.")
+            self.speech.speak(self._capture_failed_message())
         self.test_runner.start()
 
     def _on_test_tick(self, event) -> None:
