@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Typing tutor: building choices</title>
+<style>
+  html { font-size: 100%; }
+  body { max-width: 46rem; margin: 0 auto; padding: 1.5rem;
+         font-family: system-ui, Segoe UI, sans-serif; line-height: 1.6;
+         color: #111; background: #fff; }
+  h1 { font-size: 1.8rem; line-height: 1.25; }
+  h2 { font-size: 1.35rem; margin-top: 2rem; border-bottom: 2px solid #ccc; padding-bottom: .2rem; }
+  h3 { font-size: 1.1rem; margin-top: 1.5rem; }
+  dt { font-weight: 700; margin-top: .8rem; }
+  dd { margin-left: 0; }
+  .rec { border-left: 6px solid #14532d; background: #f0fdf4; padding: .8rem 1rem; }
+  .warn { border-left: 6px solid #7c2d12; background: #fff7ed; padding: .8rem 1rem; }
+  code { font-family: ui-monospace, Consolas, monospace; }
+  a:focus, :focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Typing tutor: building choices</h1>
+
+<p>This note covers the client stack, the server, and how the program takes over the
+keyboard. It is a design note, not the final spec. Nothing has been built yet.</p>
+
+<h2>What the TypeAbility manual gives us</h2>
+<ul>
+  <li>A spoken-first program. The student never needs to look at the screen.</li>
+  <li>Function keys as the control panel: F1 repeat, F2 next or repeat, F3 pick a lesson,
+      F4 dictation, F5 race, F11 teacher mode, F12 progress.</li>
+  <li>Ninety-nine lessons that move from finding the function keys, through the home row,
+      the top and bottom rows, capitals, numbers, punctuation, navigation, editing,
+      selecting, copy and paste, and the numpad.</li>
+  <li>Instant feedback after every key. A wrong key gets the right key spoken. A repeated
+      mistake gets the key's location described.</li>
+  <li>Each task is typed two or four times. Each lesson ends with accuracy and speed.</li>
+  <li>Dictation in chunks of three or four words, word-level echo at a higher pitch,
+      then accuracy, speed, and spelling tips.</li>
+  <li>Races: a timed speed and accuracy run on the current task.</li>
+  <li>Per-student records, a session report, a full history, and a shared folder so a student
+      can move between computers.</li>
+  <li>Preferences for typing experience, speech rate, double-press speed, one-handed typing,
+      laptop keyboard, and dictation echo.</li>
+</ul>
+
+<h2>What TypingClub's staff side gives us</h2>
+<ul>
+  <li>Classes, and students enrolled in a class.</li>
+  <li>A scoreboard: stars, practice time, average accuracy, average speed, overall progress.</li>
+  <li>A per-student view for each lesson.</li>
+  <li>An attempt history, in order, with a way to open one attempt.</li>
+  <li>A students-by-lessons grid, so a teacher sees who is stuck.</li>
+  <li>Daily and weekly practice time, and CSV export for grading.</li>
+  <li>A lesson plan the teacher can reorder or trim, with per-class goals.</li>
+</ul>
+
+<h2>Three ways to build the client</h2>
+
+<h3>Option A: Python with wxPython, and Prism through the Python binding</h3>
+<dl>
+  <dt>What it is</dt>
+  <dd>One Python program. wxPython draws the windows and dialogs. Prism talks to the screen
+      reader. The lesson area is a custom drawing surface that the screen reader cannot
+      see into, so Prism is the only voice during a lesson.</dd>
+  <dt>Good</dt>
+  <dd>It uses each platform's own controls. On Windows that means real Win32 controls,
+      the same kind NVDA is built from, so NVDA and JAWS read them the way they read any
+      native program. On Linux, wxGTK passes the work to GTK, which is what Orca reads. On
+      macOS it uses Cocoa controls. NVDA itself is written in wxPython, so Windows behavior
+      is proven. Prism's Python binding works here today. Full keyboard capture is practical
+      on each platform.</dd>
+  <dt>Bad</dt>
+  <dd>Installers are large, around 60 to 90 megabytes. There are no Linux wheels on PyPI,
+      so Linux uses the distribution package or a bundled build. Some wx controls are
+      drawn by wx itself rather than the platform, so the design will use native lists,
+      choices, and text fields instead of the generic ones.</dd>
+  <dt>Verdict</dt>
+  <dd>The recommended option.</dd>
+</dl>
+
+<h3>Option B: Python with Qt, the earlier recommendation</h3>
+<dl>
+  <dt>What it is</dt>
+  <dd>PySide6 and Qt 6, with Qt's own accessibility bridge to each platform.</dd>
+  <dt>Good</dt>
+  <dd>Modern widgets, strong layout and drawing, and good documentation.</dd>
+  <dt>Bad</dt>
+  <dd>Qt draws its own controls and then describes them to the screen reader, and that
+      description is unreliable. In Qt 6.11.1 with PySide6, a list box does not take
+      keyboard focus or announce its selection in VoiceOver, a combo box changes value
+      without speaking, and a tree view can crash the program while VoiceOver is running.
+      Older NVDA reports show the same pattern with tree views and editable combo boxes.
+      These are exactly the controls a lesson picker and a preferences dialog need.</dd>
+  <dt>Verdict</dt>
+  <dd>Rejected. The risk lands on the screens blind students use most.</dd>
+</dl>
+
+<h3>Option C: Rust with a native window toolkit, and Prism's Rust binding</h3>
+<dl>
+  <dt>What it is</dt>
+  <dd>A small compiled program, custom-drawn, with Prism called directly.</dd>
+  <dt>Good</dt>
+  <dd>Small download, exact control of every key, strong performance, one binary per
+      platform.</dd>
+  <dt>Bad</dt>
+  <dd>Custom-drawn interfaces have young accessibility support, especially on macOS.
+      Hitting WCAG 2.1 AA means building the accessibility tree by hand. Much slower to
+      build, and harder for you to change later.</dd>
+  <dt>Verdict</dt>
+  <dd>Only worth it if installer size or performance becomes a real problem.</dd>
+</dl>
+
+<h3>Rejected outright: a web interface inside a desktop shell</h3>
+<p>Tauri or Electron would look good and share code with the dashboard, but the web view
+takes some keys before the page sees them. Control W, F5, F11, Alt Left, and Tab are
+handled by the browser itself, which directly conflicts with teaching every key. The page
+is also exposed to the screen reader, so lesson text is spoken twice unless it is hidden,
+and hiding it is fragile.</p>
+
+<h2>Recommendation</h2>
+<div class="rec">
+<p><strong>Client:</strong> Python 3.13 with wxPython 4.3.2 and the Prism Python binding.
+Windows first. macOS and Linux use the same code with their own key capture layer.</p>
+<p><strong>Server:</strong> FastAPI with PostgreSQL, behind a Caddy reverse proxy that
+obtains and renews the HTTPS certificate. The dashboard is ordinary server-rendered HTML
+with small amounts of JavaScript, so it works with any screen reader and is easy to audit
+against WCAG 2.1 AA. Staff open it in a browser on the school domain. Students' clients
+sync to it over the internet and keep working offline.</p>
+<p><strong>Why:</strong> wxPython gives each platform's real controls, which is the one
+thing that reliably makes menus, lists, and dialogs speak. Prism owns every word during a
+lesson. The server is small enough for one Linux machine and safe to expose on a domain.</p>
+</div>
+
+<h2>Taking the whole keyboard</h2>
+<p>During a lesson the client grabs the keyboard, so Tab, Enter, Control, Alt, the
+function keys, and left versus right Shift all reach the lesson. Capture sits in a small
+platform layer. The lesson logic itself never touches the operating system, so it can be
+tested without a real keyboard.</p>
+<dl>
+  <dt>Windows</dt>
+  <dd>A low-level keyboard hook in a background thread. It needs no administrator rights.
+      It sees left and right Shift, Control, and Alt separately, and it can swallow Alt Tab
+      and the Windows key. Control Alt Delete and Windows L are never blocked.</dd>
+  <dt>macOS</dt>
+  <dd>A system event tap, which needs a one-time Accessibility permission. The setup
+      screen detects whether permission is granted and explains how to grant it. Command
+      Tab and Command Q can be swallowed. The screen lock shortcut cannot.</dd>
+  <dt>Linux</dt>
+  <dd>A keyboard grab on the window under X11. Under Wayland a program cannot grab the
+      whole keyboard, so capture happens inside the window only and some desktop shortcuts
+      will still fire. The app will say so.</dd>
+  <dt>Always available</dt>
+  <dd>Escape pressed three times ends a lesson and releases the keyboard within about a
+      second, as in TypeAbility. A separate chord, Control Alt Shift X, also releases it and
+      is never taught. Both are announced when a lesson starts.</dd>
+</dl>
+
+<h2>Risks and how we check them</h2>
+<div class="warn">
+<ul>
+  <li><strong>macOS control coverage.</strong> wx uses Cocoa controls, but a few wx controls
+      are drawn by wx itself. The design sticks to native ones, and we test on your Mac over
+      SSH before promising macOS support.</li>
+  <li><strong>Linux packaging.</strong> wxPython has no Linux wheels on PyPI. Linux installs
+      from the distribution package, or ships a bundled build. Linux is last, so this does
+      not block the first release.</li>
+  <li><strong>Key capture versus antivirus.</strong> A low-level hook can look suspicious to
+      some security software. We sign the installer and keep the hook active only during a
+      lesson.</li>
+  <li><strong>Keyboard layout.</strong> The course teaches key positions, so it assumes a
+      US QWERTY layout. The client detects and warns about other layouts instead of teaching
+      the wrong finger.</li>
+  <li><strong>Content.</strong> We write our own lesson text and word lists from the
+      manual's progression. We do not copy TypeAbility's wording or its jokes.</li>
+  <li><strong>Public server.</strong> A domain on the internet means HTTPS only, hardened
+      sign-in, rate limiting, and nightly database backups kept off the machine.</li>
+</ul>
+</div>
+
+<h2>What I need from you</h2>
+<p>Approve the stack, or tell me to change one part. After that I will present the design
+in sections: the client's spoken experience, the lesson engine, the key capture layer,
+the data model and sync, the dashboard, and testing. Then I will write the spec for your
+review before any code.</p>
+</main>
+</body>
+</html>

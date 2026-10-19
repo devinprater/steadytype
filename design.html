@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Typing tutor: design</title>
+<style>
+  html { font-size: 100%; }
+  body { max-width: 48rem; margin: 0 auto; padding: 1.5rem;
+         font-family: system-ui, Segoe UI, sans-serif; line-height: 1.6;
+         color: #111; background: #fff; }
+  h1 { font-size: 1.8rem; line-height: 1.25; }
+  h2 { font-size: 1.4rem; margin-top: 2.2rem; border-bottom: 2px solid #bbb; padding-bottom: .2rem; }
+  h3 { font-size: 1.12rem; margin-top: 1.5rem; }
+  h4 { font-size: 1rem; margin-top: 1.2rem; }
+  pre { background: #f4f4f4; padding: .8rem; overflow-x: auto; border-left: 4px solid #999; }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: .95em; }
+  .note { border-left: 6px solid #1e3a8a; background: #eff6ff; padding: .8rem 1rem; }
+  .warn { border-left: 6px solid #7c2d12; background: #fff7ed; padding: .8rem 1rem; }
+  a:focus, :focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+  ul { padding-left: 1.2rem; }
+</style>
+</head>
+<body>
+<main>
+<h1>Typing tutor: design</h1>
+<p>Four sections. Read them and tell me which parts to change. Nothing is built yet.</p>
+
+<h2>1. The spoken lesson experience</h2>
+
+<h3>Starting up</h3>
+<p>The window opens with the sign-in form. These are native text fields, so the screen
+reader reads them normally. Prism speaks the screen name and any error. When a username
+is remembered, focus lands on the Sign in button, so pressing Enter signs in.</p>
+<p>After sign-in, Prism says: <em>"Welcome, Dana. You are on lesson 12, task 3. Press
+Enter to continue, or F3 twice to choose a lesson."</em></p>
+<p>Two remember-me levels, set by a checkbox on the sign-in screen:</p>
+<ul>
+  <li><strong>Remember my username.</strong> Fills the name next time. The password is
+      still required. This is the default on shared classroom computers.</li>
+  <li><strong>Keep me signed in.</strong> No typing at all, for a student's own machine
+      at home. The session token is stored in the operating system's credential store,
+      never in a plain file.</li>
+</ul>
+<p>A <strong>Switch student</strong> item sits in the File menu and on the sign-in screen.
+It ends the session but keeps the saved username, so the next student can type over it.</p>
+
+<h3>A lesson</h3>
+<p>A lesson opens with its name, what it teaches, how many tasks it has, and what ends a
+task. Each task is introduced, then typed two or four times. The student hears the target
+before typing and can ask for it again at any moment.</p>
+<p>Feedback is immediate and short:</p>
+<ul>
+  <li>Correct: a short tone, or the word "right", or both. The student chooses.</li>
+  <li>Wrong, first time: the key they pressed and the key they need.</li>
+  <li>Wrong, twice on the same key: where that key is, which hand, which finger.</li>
+  <li>Wrong again: the same help, slower, plus a reminder of the target.</li>
+</ul>
+<p>Keyboarding lessons do not let the student past a wrong key. Dictation never corrects
+while typing; it reports at the end.</p>
+
+<h3>Ending a lesson</h3>
+<p>The student hears accuracy, real accuracy, words per minute, time taken, and one tip
+drawn from their own mistakes. For example: <em>"Most of your misses were on P. That is
+the right hand, little finger."</em> No jokes.</p>
+<p>Then: <em>"Press Enter for the next lesson, or F3 twice to choose another."</em></p>
+
+<h3>Keys that control the program</h3>
+<p>These follow TypeAbility, including the double press, because students already learn
+them in the first lesson.</p>
+<ul>
+  <li>F1 twice: repeat the instructions.</li>
+  <li>F2 twice: next lesson. F2 three times: repeat this lesson.</li>
+  <li>F3 twice: lesson picker, a tree of lessons and their tasks.</li>
+  <li>F4 twice: dictation picker.</li>
+  <li>F5 twice: race on the current task.</li>
+  <li>F12 twice: this session's report. F12 three times: full history.</li>
+  <li>Escape once: cancel a dialog. Escape three times: save and quit.</li>
+  <li>Control U: preferences. Control Shift U: speak current preferences.</li>
+</ul>
+<p>The double-press window is adjustable from 300 to 900 milliseconds for students with
+motor difficulty. Every one of these also exists as a menu item, so nobody is locked out
+of the program by a double press.</p>
+<p>During the first lesson, function keys are also the thing being taught. A single press
+becomes input after the double-press window passes; a double press is a command. This is
+the same behavior as TypeAbility and is explained to the student in the lesson.</p>
+
+<h3>Sound</h3>
+<p>Short tones, never speech, mark correct, incorrect, race start, ten seconds left, race
+finish, and lesson complete. Tones can be turned off. They exist for the moments speech
+would be too slow or would talk over the target.</p>
+
+<h3>Speech and braille</h3>
+<p>Prism picks the running screen reader first, then a speech engine. On Windows that is
+NVDA or JAWS, then OneCore or SAPI. On macOS it is VoiceOver. On Linux it is Orca or
+Speech Dispatcher. Prism also puts the current line on a braille display when the reader
+supports it; otherwise the same text is in an ordinary accessible label.</p>
+<p>Lesson prompts are queued. Navigation interrupts. The student's rate, pitch, volume,
+and voice are preferences and follow them between machines.</p>
+
+<h3>On screen</h3>
+<p>The lesson area shows large monospace text with the current position marked by a shape
+as well as a color, and errors marked by an underline plus a symbol. Contrast meets AA.
+The screen is a convenience for sighted staff and low-vision students; nothing depends on
+it.</p>
+
+<h2>2. The lesson engine and key capture</h2>
+
+<h3>Engine</h3>
+<p>The engine is plain Python with no window toolkit and no operating system calls. It
+takes a stream of normalized key events and returns commands: speak this, play that tone,
+show this, save this attempt. That keeps the teaching logic testable without a keyboard,
+a screen reader, or a display.</p>
+<pre>KeyEvent(kind, key, text, modifiers, side, is_repeat, scan_code)
+Command: Speak(text, interrupt) | Tone(name) | Display(state)
+         | SaveAttempt(record) | EndLesson()</pre>
+<p>Keys are a platform-neutral list covering everything the course teaches: letters,
+digits, punctuation, Space, both Enters, Tab, Escape, Backspace, Delete, Insert, Home,
+End, Page Up and Down, arrows, F1 to F12, left and right Shift, Control, Alt, and the
+Windows or Command key, Caps Lock, Num Lock, numpad digits and operators.</p>
+
+<h3>Lessons are data</h3>
+<p>Lessons ship as versioned files, cached locally from the server. Each task declares its
+text, how many times to type it, which key ends it, and optional help text.</p>
+<pre>id: 14
+title: "New letters: U I O P"
+teaches: [u, i, o, p]
+tasks:
+  - text: "u"
+    repeat: 4
+    end_key: space
+    help: "U is above J. Right hand, index finger."</pre>
+<p>Task kinds: single keys, words, phrases, sentences, key combinations, navigation and
+editing drills, and games. A game is a small rule object that turns a task into a prompt
+and decides what counts as correct, so the six or so games are isolated and testable.</p>
+
+<h3>Scoring</h3>
+<p>Each attempt stores keystrokes, errors, corrections, active typing time, words per
+minute, accuracy including corrections, real accuracy counting only first-time-correct
+characters, and stars from one to five. The class goal sets the speed and accuracy needed
+for each star. Per-key error counts are kept, which is what produces the tip at the end
+and the error table on the dashboard.</p>
+
+<h3>Dictation</h3>
+<p>The text is split into chunks of three or four words. The student hears a chunk, types
+it, and hears the next. The student's own words are echoed at a higher pitch, or not at
+all, by preference. Escape ends the task. The report includes accuracy, speed, and a
+spelling note for any word that came out wrong.</p>
+
+<h3>Races</h3>
+<p>Sixty seconds on the current task, repeating until time runs out, with a tone at the
+start, at ten seconds left, and at the end. The result is saved as a normal attempt with a
+race flag.</p>
+
+<h3>Taking the keyboard</h3>
+<p>Capture happens only while a lesson is running. It is off during sign-in, dialogs, and
+menus. If capture cannot start, the lesson still runs inside its window and says so.</p>
+<ul>
+  <li><strong>Windows:</strong> a low-level keyboard hook on its own thread. No admin
+      rights. Left and right Shift, Control, and Alt are separate. Alt Tab and the Windows
+      key can be swallowed. Control Alt Delete and Windows L cannot, and are listed in the
+      lesson help.</li>
+  <li><strong>macOS:</strong> a system event tap, which needs a one-time Accessibility
+      permission. The app detects whether it has permission and walks the user through
+      granting it. Command Tab and Command Q can be swallowed. The screen lock shortcut
+      cannot.</li>
+  <li><strong>Linux:</strong> a keyboard grab on the window under X11. Under Wayland a
+      program cannot grab the whole keyboard, so capture stays inside the window and some
+      desktop shortcuts still fire. The app says so when it starts.</li>
+</ul>
+<p>Ways out, always: Escape three times ends the lesson and releases the keyboard within a
+second. Control Alt Shift X does the same and is never taught. A watchdog releases the
+keyboard if the window loses focus or the program stops responding.</p>
+<p>The client checks the keyboard layout at startup. It assumes US QWERTY, since the
+lessons teach finger positions, and warns rather than teaching the wrong finger on another
+layout.</p>
+
+<h2>3. The server and the dashboard</h2>
+
+<h3>Shape</h3>
+<p>FastAPI and PostgreSQL on one Linux machine, behind Caddy, which obtains and renews the
+HTTPS certificate for the school domain and nothing else needs a certificate. Everything
+runs with Docker Compose: web, database, proxy, and a nightly backup job.</p>
+
+<h3>Sign-in</h3>
+<p>Username and password for students and staff. Passwords are stored with Argon2id.
+Sign-in is rate limited per address and per username, with a lockout that lengthens after
+repeated failures, and the page never reveals whether a username exists. Sessions use
+secure, HTTP-only cookies with a thirty-day lifetime when Remember Me is checked, and
+expire when the browser closes otherwise. Every form carries a CSRF token. Staff can see
+an audit log of sign-ins and changes.</p>
+<p>Teachers create student accounts, generate an easy-to-type password, and reset it
+without needing an email address. There is no student email anywhere in the system.</p>
+
+<h3>The desktop client on the network</h3>
+<p>The client signs in over HTTPS and receives a short-lived access token and a long-lived
+refresh token kept in the operating system credential store. Attempts are written to a
+local database first and uploaded in batches with a unique attempt ID, so a dropped
+connection never loses a lesson and a retry never duplicates one. A student may practice
+offline for up to thirty days after the last successful sign-in.</p>
+
+<h3>What staff see</h3>
+<ul>
+  <li><strong>Class scoreboard:</strong> one row per student with lessons completed,
+      stars, average accuracy, average speed, practice time this week, and last active.</li>
+  <li><strong>Progress grid:</strong> students down the side, lessons across the top, each
+      cell read as text such as "4 stars, 92 percent, 18 words per minute". Never color
+      alone.</li>
+  <li><strong>Student page:</strong> current lesson, a table of every lesson with the best
+      attempt and how many attempts, the full attempt history, and a per-key error table
+      that answers "which keys does this student miss".</li>
+  <li><strong>Reports:</strong> daily and weekly practice time, date range, CSV export.</li>
+  <li><strong>Course editor:</strong> reorder or hide lessons for a class and set the class
+      goal for speed, accuracy, and whether Backspace is allowed.</li>
+  <li><strong>People:</strong> add students, reset a password, disable an account, move a
+      student between classes. Admins add teachers.</li>
+  <li><strong>Settings and audit log.</strong></li>
+</ul>
+
+<h3>Accessibility of the dashboard</h3>
+<p>Server-rendered HTML with landmarks, one heading per page, a skip link, real labels,
+errors tied to their fields, table captions and header scope, visible focus, and a layout
+that works at 200 percent zoom and at phone width. Charts always have a table of the same
+numbers. Status messages go to a live region. No page needs a mouse or a drag.</p>
+<p>Every page is checked automatically with axe-core in the test suite and manually with
+NVDA before release. A screen reader walkthrough of each staff task is part of the
+definition of done.</p>
+
+<h3>Running it</h3>
+<p>One command starts the stack. A nightly database dump is written off the machine, kept
+for thirty days, and a restore is documented and tested. A health endpoint and structured
+logs make failures visible. Updates are a pull and a restart.</p>
+
+<h2>4. Testing and what done means</h2>
+
+<h3>Lesson engine</h3>
+<p>Scripted input produces a transcript of what would be spoken. Those transcripts are
+saved as golden files, so a wording change that breaks teaching shows up in the diff. Math
+for speed, accuracy, and stars is unit tested. Games are tested one rule at a time.</p>
+
+<h3>Curriculum checks</h3>
+<p>A test walks every lesson and fails if a task uses a letter, number, or key that has not
+been taught yet. This catches the most likely content bug before a student ever sees it.</p>
+
+<h3>Server</h3>
+<p>Tests cover sign-in, lockout, password reset, permissions, sync, duplicate attempts,
+offline queues, and exports. A teacher must not be able to read another teacher's class.</p>
+
+<h3>Accessibility</h3>
+<p>axe-core on every route in the automated suite, a contrast check, and a keyboard-only
+pass. The desktop client is tested manually with NVDA and JAWS on Windows, VoiceOver on
+the Mac, and Orca on Linux. Sign-in, choosing a lesson, a full lesson, preferences, and
+the progress report are each walked with a screen reader.</p>
+
+<h3>Key capture</h3>
+<p>A harness injects synthetic key events so nearly all behavior is tested without a real
+keyboard. The platform layer itself is checked by hand on each system against a short
+list: every function key, both Shift keys, both Control keys, both Alt keys, Tab, Escape,
+Caps Lock, the numpad, Alt Tab, the Windows or Command key, and the two escape routes.</p>
+
+<h3>Release criteria</h3>
+<ul>
+  <li>A blind student can sign in, take lesson one, and hear a correct result without
+      sighted help.</li>
+  <li>A teacher can create a class, add a student, and read that student's progress.</li>
+  <li>Every dashboard page passes axe-core with no serious issues and a manual NVDA pass.</li>
+  <li>Pulling the network mid-lesson loses nothing and syncs on reconnect.</li>
+  <li>The keyboard is always released within one second of Escape three times.</li>
+</ul>
+
+<h2>Open questions, parked</h2>
+<ul>
+  <li>Should the project be public on GitHub, and under which license?</li>
+  <li>Do you want a browser practice page for home use later, alongside the desktop client?</li>
+  <li>Should teacher-authored lessons arrive in the first release or the second?</li>
+  <li>Which Linux distribution and version is the server?</li>
+</ul>
+</main>
+</body>
+</html>
