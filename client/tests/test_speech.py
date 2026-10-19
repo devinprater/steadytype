@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 from steadytype_client.speech import FakeSpeech, SpeechUnavailable, create_speech
 
@@ -9,6 +11,8 @@ def test_fake_records_speech_and_interrupts():
     assert speech.spoken == [("right", False), ("you need d", True)]
 
 
+@pytest.mark.skipif(sys.platform == "darwin",
+                    reason="macOS falls back to the system voice")
 def test_create_speech_reports_a_plain_failure(monkeypatch):
     def boom():
         raise SpeechUnavailable("No screen reader or speech engine was found.")
