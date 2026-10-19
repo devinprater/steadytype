@@ -88,7 +88,7 @@ class MacCapture:
             try:
                 Quartz.AXIsProcessTrustedWithOptions(
                     {Quartz.kAXTrustedCheckOptionPrompt: True})
-            except Exception:  # noqa: BLE001 - older systems lack the options call
+            except Exception:  # noqa: BLE001, S110 - older systems lack the options call
                 pass
             return False
         mask = (Quartz.CGEventMaskBit(Quartz.kCGEventKeyDown)
