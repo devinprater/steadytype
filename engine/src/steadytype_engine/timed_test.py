@@ -79,6 +79,24 @@ class TimedTest:
             return [Speak("You have one minute left.", interrupt=True)]
         return []
 
+    def attempt_record(self, lesson_id: int = 0):
+        """The row the dashboard needs, saved with kind timed_test."""
+        import uuid
+        from datetime import UTC, datetime
+
+        from .scoring import AttemptRecord
+
+        result = self.finish()
+        elapsed = max(0.0, min(float(self.seconds), self._now() - self._started))
+        stamp = datetime.now(UTC).isoformat()
+        return AttemptRecord(
+            id=str(uuid.uuid4()), lesson_id=lesson_id, kind="timed_test",
+            started_at=stamp, ended_at=stamp, active_seconds=elapsed,
+            characters=len(self.typed), keypresses=len(self.typed),
+            errors=result.error_words, wpm=result.net_wpm, accuracy=result.accuracy,
+            real_accuracy=result.accuracy, stars=0, key_stats=(),
+            device_id="", client_version="")
+
     def finish(self) -> CertificationResult:
         elapsed = self._now() - self._started
         elapsed = max(0.0, min(float(self.seconds), elapsed))
