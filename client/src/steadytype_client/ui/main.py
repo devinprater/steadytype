@@ -71,7 +71,7 @@ class MainFrame(wx.Frame):
         text = (
             "F1 twice: repeat the instructions.\n"
             "F2 twice: next lesson. F2 three times: repeat this lesson.\n"
-            "F3 twice: pick a lesson. F4 twice: dictation. F5 twice: race.\n"
+            "F3 twice: pick a lesson. F4 twice: dictation. F5 twice: race. F7 twice: game.\n"
             "F6 twice: timed test. F12 twice: my progress.\n"
             "Escape three times: leave the lesson and quit.\n"
             "Control Alt Shift X: leave any lesson, even the function key lesson.\n"
