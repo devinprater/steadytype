@@ -17,7 +17,7 @@ from steadytype_client.router import FUNCTION_KEYS, CommandRouter
 from steadytype_client.sync import SyncClient, remote_token
 
 if sys.platform == "win32":
-    from steadytype_client.capture.windows import WindowsCapture
+    from steadytype_client.capture import make_capture
 else:  # pragma: no cover - the other platforms arrive in a later plan
     WindowsCapture = None
 
@@ -43,7 +43,7 @@ class AppController:
         self.router = CommandRouter(self.prefs.double_press_ms)
         self.presenter: LessonPresenter | None = None
         self.lesson_index = 0
-        self.capture = WindowsCapture() if WindowsCapture is not None else None
+        self.capture = make_capture()
         self.capture_ok = False
         self.frame = None
         self.switch_requested = False

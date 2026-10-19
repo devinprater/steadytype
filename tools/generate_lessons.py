@@ -272,8 +272,8 @@ def pad_tasks(tasks, teaches, chars):
 def build_intro(id_, unit, teaches, mode):
     """A teacher's voice, not a template: where the key is, why, and how to practise."""
     if teaches and all(key.isdigit() for key in teaches):
-        tips = [f"{' and '.join(teaches)} are on the number row. Reach with the "
-                "fingers that own the keys below them, then come home."]
+        tips = [(f"{' and '.join(teaches)} are on the number row. Reach with the "
+                 "fingers that own the keys below them, then come home.")]
     else:
         tips = [KEY_TIPS[key] for key in teaches if key in KEY_TIPS][:2]
     body = " ".join(tips) if tips else "You know these keys already."
