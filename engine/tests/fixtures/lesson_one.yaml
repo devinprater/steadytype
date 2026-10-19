@@ -1,0 +1,17 @@
+schema: 1
+id: 1
+unit: 1
+ordinal: 1
+title: The function keys
+teaches: [f1, f2]
+kind: keyboarding
+end_key: none
+repeat: 2
+intro: Find the function keys along the top of the keyboard.
+tasks:
+  - text: f1
+    kind: key
+    help: F1 is the first key in the top row.
+  - text: f2
+    kind: key
+    help: F2 is next to F1.

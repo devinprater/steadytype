@@ -1,0 +1,21 @@
+SPEAK: Find the function keys along the top of the keyboard.
+SPEAK: Task 1 of 2. Press f1, 2 times.
+TONE: correct
+SPEAK: right
+SPEAK: Again. Task 1 of 2. Press f1, 2 times.
+TONE: correct
+SPEAK: right
+SPEAK: Task 2 of 2. Press f2, 2 times.
+DISPLAY: next task
+TONE: correct
+SPEAK: right
+SPEAK: Again. Task 2 of 2. Press f2, 2 times.
+TONE: correct
+SPEAK: right
+TONE: lesson_done
+END
+SPEAK: Your accuracy was 100 percent. Real accuracy, before corrections, was 100 percent.
+SPEAK: You typed 0 words per minute, in 0.0 minutes.
+SPEAK: You earned 1 out of 5 stars.
+SPEAK: Keep your fingers on the home row.
+SPEAK: Press Enter for the next lesson, or F3 twice to choose another.
