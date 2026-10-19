@@ -103,7 +103,10 @@ class KBDLLHOOKSTRUCT(ctypes.Structure):
                 ("dwExtraInfo", ctypes.POINTER(ctypes.c_ulong))]
 
 
-HOOKPROC = ctypes.WINFUNCTYPE(ctypes.c_ssize_t, ctypes.c_int, wintypes.WPARAM, wintypes.LPARAM)
+# WINFUNCTYPE exists only on Windows; the fallback keeps this module importable
+# so its pure key mapping can be tested everywhere.
+_WINFUNCTYPE = getattr(ctypes, "WINFUNCTYPE", ctypes.CFUNCTYPE)
+HOOKPROC = _WINFUNCTYPE(ctypes.c_ssize_t, ctypes.c_int, wintypes.WPARAM, wintypes.LPARAM)
 
 user32 = ctypes.WinDLL("user32", use_last_error=True)
 kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
