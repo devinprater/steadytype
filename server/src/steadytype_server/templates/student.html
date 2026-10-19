@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ student.display_name }} — {{ school }}{% endblock %}
+{% block main %}
+<h1>{{ student.display_name }}</h1>
+<p>{{ student.username }}{% if student.disabled %} — disabled{% endif %}</p>
+<p><a href="/classes/{{ klass.id }}">Back to {{ klass.name }}</a></p>
+
+<h2>Recent lessons</h2>
+{% if attempts %}
+<table>
+  <caption>Attempts by {{ student.display_name }}</caption>
+  <thead>
+    <tr><th scope="col">Lesson</th><th scope="col">Stars</th><th scope="col">Accuracy</th>
+        <th scope="col">Words per minute</th><th scope="col">Started</th></tr>
+  </thead>
+  <tbody>
+  {% for attempt in attempts %}
+    <tr>
+      <td>{{ attempt.lesson_id }}</td>
+      <td>{{ attempt.stars }}</td>
+      <td>{{ "%.0f"|format(attempt.accuracy) }} percent</td>
+      <td>{{ "%.0f"|format(attempt.wpm) }}</td>
+      <td>{{ attempt.started_at.strftime("%Y-%m-%d %H:%M") if attempt.started_at else "" }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No attempts yet.</p>
+{% endif %}
+
+<h2>Keys to practise</h2>
+{% if weakest %}
+<table>
+  <caption>Keys with the most errors</caption>
+  <thead><tr><th scope="col">Key</th><th scope="col">Times expected</th><th scope="col">Errors</th></tr></thead>
+  <tbody>
+  {% for key, stat in weakest %}
+    <tr><td>{{ key }}</td><td>{{ stat.presses }}</td><td>{{ stat.errors }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No key errors recorded.</p>
+{% endif %}
+{% endblock %}

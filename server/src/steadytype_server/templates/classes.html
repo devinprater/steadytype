@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Classes — {{ school }}{% endblock %}
+{% block main %}
+<h1>Classes</h1>
+<p><a href="/classes/new">New class</a></p>
+{% if classes %}
+<ul class="cards">
+  {% for klass in classes %}
+  <li><a href="/classes/{{ klass.id }}">{{ klass.name }}</a></li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No classes yet.</p>
+{% endif %}
+{% endblock %}

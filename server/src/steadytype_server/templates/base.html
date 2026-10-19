@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}SteadyType{% endblock %}</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+  <strong>{{ school }}</strong>
+  {% if user %}
+  <nav aria-label="Main">
+    <a href="/classes">Classes</a>
+    <form method="post" action="/signout" class="inline">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <button type="submit">Sign out</button>
+    </form>
+  </nav>
+  {% endif %}
+</header>
+<main id="main">
+{% block main %}{% endblock %}
+</main>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ klass.name }} — {{ school }}{% endblock %}
+{% block main %}
+<h1>{{ klass.name }}</h1>
+<p><a href="/classes/{{ klass.id }}/export.csv">Download this class as CSV</a></p>
+<table>
+  <caption>Students in {{ klass.name }}</caption>
+  <thead>
+    <tr>
+      <th scope="col">Student</th>
+      <th scope="col">Lessons</th>
+      <th scope="col">Accuracy</th>
+      <th scope="col">Words per minute</th>
+      <th scope="col">Minutes this week</th>
+      <th scope="col">Last active</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for row in rows %}
+    <tr>
+      <td><a href="/classes/{{ klass.id }}/students/{{ row.student.id }}">{{ row.student.display_name }}</a></td>
+      <td>{{ row.lessons }}</td>
+      <td>{{ "%.0f"|format(row.accuracy) }} percent</td>
+      <td>{{ "%.0f"|format(row.wpm) }}</td>
+      <td>{{ "%.0f"|format(row.minutes) }}</td>
+      <td>{{ row.last.strftime("%Y-%m-%d %H:%M") if row.last else "Never" }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% if not rows %}<p>No students in this class yet.</p>{% endif %}
+
+<h2>Add a student</h2>
+<form method="post" action="/classes/{{ klass.id }}/students" class="stack">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label for="username">Username, like prater.devin</label>
+  <input id="username" name="username" required>
+  <label for="display_name">Name the class will show</label>
+  <input id="display_name" name="display_name">
+  <button type="submit">Add student</button>
+</form>
+{% endblock %}

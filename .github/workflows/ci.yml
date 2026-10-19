@@ -17,6 +17,8 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install -e "./engine[dev]"
-      - run: pip install -e "./client[dev]"
-      - run: ruff check engine client
-      - run: pytest engine client -m "not ui"
+      - run: pip install -e "./client" --no-deps
+      - run: pip install -e "./server[dev]"
+      - run: ruff check engine client server
+      - run: pytest engine server -q
+      - run: pytest client -m "not ui" -q

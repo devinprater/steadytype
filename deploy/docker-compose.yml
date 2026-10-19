@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: steadytype
+      POSTGRES_USER: steadytype
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    environment:
+      STEADYTYPE_DATABASE_URL: postgresql+psycopg://steadytype:${POSTGRES_PASSWORD}@db:5432/steadytype
+      STEADYTYPE_SECRET: ${STEADYTYPE_SECRET}
+      STEADYTYPE_SCHOOL_NAME: ${STEADYTYPE_SCHOOL_NAME}
+      STEADYTYPE_TIMEZONE: ${STEADYTYPE_TIMEZONE}
+      STEADYTYPE_SECURE_COOKIES: "1"
+    depends_on:
+      - db
+    expose:
+      - "8000"
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    environment:
+      DOMAIN: ${DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+    restart: unless-stopped
+
+  backup:
+    image: postgres:16
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      NAS_PATH: ${NAS_PATH:-}
+    volumes:
+      - ./backup.sh:/backup.sh:ro
+      - backups:/backups
+    entrypoint: ["/bin/sh", "/backup.sh"]
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:
+  backups:
