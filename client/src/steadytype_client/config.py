@@ -46,7 +46,7 @@ class AppPaths:
 
 def bundled_content() -> Path | None:
     here = Path(__file__).resolve()
-    for parent in here.parents:
+    for parent in (Path.cwd(), *here.parents):
         candidate = parent / "content" / "course.yaml"
         if candidate.exists():
             return candidate
