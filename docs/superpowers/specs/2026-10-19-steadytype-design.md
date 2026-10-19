@@ -579,8 +579,10 @@ schema.
 - **S-4** Uploads are size-limited and validated against the schema.
 - **S-5** Student data is a display name, a username, and typing results. No email,
   no address, no date of birth.
-- **S-6** A teacher can delete a student and all their attempts; an admin can purge
-  a class or a year.
+- **S-6** A teacher can delete a student and all their attempts. Nothing is ever
+  purged automatically. An admin can purge students and attempts that have been
+  inactive for five years or more, after a preview showing exactly what will be
+  removed, a typed confirmation, and an audit entry.
 - **S-7** A student's data can be exported as CSV by their teacher.
 - **S-8** Dependency scanning runs in CI. Prism is pinned, because it is pre-1.0.
 - **S-9** Failed sign-ins, password resets, account changes, and exports are
@@ -646,16 +648,14 @@ schema.
 
 ## 15. Open questions
 
-1. **Retention.** How long should attempts be kept before an admin purge is
-   suggested? Three years is the default assumption.
-2. **Braille keyboard input.** Out of scope now. Revisit when a student needs it.
-3. **Academic quizzes.** Out of scope now. Revisit after the browser practice page.
-4. **Screen reader key lesson.** TypeAbility taught the JAWS key. A lesson that
+1. **Braille keyboard input.** Out of scope now. Revisit when a student needs it.
+2. **Academic quizzes.** Out of scope now. Revisit after the browser practice page.
+3. **Screen reader key lesson.** TypeAbility taught the JAWS key. A lesson that
    teaches the screen reader's own modifier key would need to detect the reader.
    Later.
-5. **Browser practice page.** Next milestone after the first release. Keyboard
+4. **Browser practice page.** Next milestone after the first release. Keyboard
    lessons only.
-6. **Staff roles.** Admin and teacher are enough for now. A "distance learning
+5. **Staff roles.** Admin and teacher are enough for now. A "distance learning
    coordinator" role can wait.
 
 ## 16. Risks
