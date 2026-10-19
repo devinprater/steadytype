@@ -1,3 +1,10 @@
+import sys
+
+import pytest
+
+if sys.platform != "win32":
+    pytest.skip("Windows virtual-key map", allow_module_level=True)
+
 from steadytype_client.capture.windows import WM_KEYDOWN, WM_KEYUP, is_key_down, map_key
 from steadytype_engine.keys import Key
 
