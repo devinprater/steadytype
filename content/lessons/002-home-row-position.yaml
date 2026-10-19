@@ -1,0 +1,22 @@
+schema: 1
+id: 2
+unit: 1
+ordinal: 2
+title: The home row
+teaches: [f, j]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >
+  The home row is the middle row of letters. Rest your fingers there between
+  every key you type. The F and J keys have a small bump. Find the bumps with
+  your index fingers, and the rest of your fingers fall into place.
+tasks:
+  - text: f
+    help: F is under your left index finger, on the bump.
+  - text: j
+    help: J is under your right index finger, on the bump.
+  - text: ff
+  - text: jj
+  - text: fj
+  - text: jf

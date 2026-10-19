@@ -77,7 +77,7 @@ class Lesson:
             value = data.get(field)
             if not isinstance(value, str) or not value.strip():
                 raise LessonError(f"{field}: must be a non-empty string")
-            return value
+            return value.strip()
 
         for field in ("id", "unit", "ordinal"):
             value = data.get(field)

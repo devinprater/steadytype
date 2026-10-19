@@ -1,0 +1,14 @@
+schema: 1
+id: 5
+unit: 1
+ordinal: 5
+title: Home row phrases
+teaches: [a, s, d, f, j, k, l]
+kind: keyboarding
+end_key: space
+repeat: 2
+intro: Now put the words together. Keep your fingers on the home row between words.
+tasks:
+  - text: a lad
+  - text: all fall
+  - text: dad adds

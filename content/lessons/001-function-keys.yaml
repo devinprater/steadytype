@@ -1,0 +1,29 @@
+schema: 1
+id: 1
+unit: 1
+ordinal: 1
+title: The function keys
+teaches: [f1, f2, f3, f4, escape]
+kind: keyboarding
+end_key: none
+repeat: 2
+intro: >
+  Find the function keys along the top of the keyboard. They are the small
+  square keys above the number row, not the round buttons some keyboards have.
+  The first four are F1 to F4. Escape is at the far left of the same row.
+tasks:
+  - text: f1
+    kind: key
+    help: F1 is the first function key at the top left.
+  - text: f2
+    kind: key
+    help: F2 is next to F1.
+  - text: f3
+    kind: key
+    help: F3 is next to F2.
+  - text: f4
+    kind: key
+    help: F4 is next to F3.
+  - text: escape
+    kind: key
+    help: Escape is at the far left of the top row.

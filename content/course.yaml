@@ -1,0 +1,8 @@
+schema: 1
+version: "0.1.0"
+lessons:
+  - lessons/001-function-keys.yaml
+  - lessons/002-home-row-position.yaml
+  - lessons/003-home-row-letters.yaml
+  - lessons/004-home-row-words.yaml
+  - lessons/005-home-row-phrases.yaml

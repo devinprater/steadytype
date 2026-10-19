@@ -1,0 +1,27 @@
+schema: 1
+id: 3
+unit: 1
+ordinal: 3
+title: Home row letters
+teaches: [a, s, d, k, l]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >
+  These letters stay on the home row. A is under your left little finger.
+  S is under the ring finger. D is under the middle finger. K is under the
+  right middle finger. L is under the right ring finger.
+tasks:
+  - text: a
+  - text: s
+  - text: d
+  - text: f
+  - text: j
+  - text: k
+  - text: l
+  - text: as
+  - text: df
+  - text: jk
+  - text: kl
+  - text: asdf
+  - text: jkl

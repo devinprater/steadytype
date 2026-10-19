@@ -1,0 +1,17 @@
+schema: 1
+id: 4
+unit: 1
+ordinal: 4
+title: Home row words
+teaches: [a, s, d, f, j, k, l]
+kind: keyboarding
+end_key: space
+repeat: 2
+intro: These words use only the letters you have learned.
+tasks:
+  - text: add
+  - text: dad
+  - text: sad
+  - text: fall
+  - text: lads
+  - text: flask
