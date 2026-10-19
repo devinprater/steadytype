@@ -1,0 +1,24 @@
+schema: 1
+id: 14
+unit: 2
+ordinal: 14
+title: "R and U words"
+teaches: ["r", "u"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 14. Reach up with one finger, then return to the home row.
+tasks:
+  - text: "desk"
+  - text: "life"
+  - text: "like"
+  - text: "read"
+  - text: "said"
+  - text: "side"
+  - text: "all"
+  - text: "are"
+  - text: "see"
+  - text: "as"
+  - text: "if"
+  - text: "is"

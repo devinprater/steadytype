@@ -1,0 +1,26 @@
+schema: 1
+id: 30
+unit: 4
+ordinal: 30
+title: "The letter Z"
+teaches: ["z"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 30. The bottom row curls your fingers down. Keep your wrists still.
+tasks:
+  - text: "z"
+  - text: "zz"
+  - text: "za"
+  - text: "zs"
+  - text: "zd"
+  - text: "zf"
+  - text: "a"
+  - text: "an"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"
+  - text: "in"
+  - text: "if"

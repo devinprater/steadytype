@@ -1,0 +1,20 @@
+schema: 1
+id: 46
+unit: 6
+ordinal: 46
+title: "Colon and semicolon"
+teaches: [":", ";"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 46. Punctuation is a normal key press. Say the mark to yourself as you type.
+tasks:
+  - text: "well, that is done."
+  - text: "it's a good day."
+  - text: "\"come in,\" she said."
+  - text: "where is the key?"
+  - text: "stop!"
+  - text: "he said: \"wait.\""
+  - text: "the list is short; the day is long."
+  - text: "the first day, the best day."

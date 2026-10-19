@@ -1,0 +1,24 @@
+schema: 1
+id: 13
+unit: 2
+ordinal: 13
+title: "E and I words"
+teaches: ["e", "i"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 13. Reach up with one finger, then return to the home row.
+tasks:
+  - text: "desk"
+  - text: "life"
+  - text: "like"
+  - text: "read"
+  - text: "said"
+  - text: "side"
+  - text: "all"
+  - text: "are"
+  - text: "see"
+  - text: "as"
+  - text: "if"
+  - text: "is"

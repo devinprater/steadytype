@@ -1,0 +1,26 @@
+schema: 1
+id: 10
+unit: 2
+ordinal: 10
+title: "The letter I"
+teaches: ["i"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 10. Reach up with one finger, then return to the home row.
+tasks:
+  - text: "i"
+  - text: "ii"
+  - text: "ia"
+  - text: "is"
+  - text: "id"
+  - text: "if"
+  - text: "a"
+  - text: "as"
+  - text: "is"
+  - text: "if"
+  - text: "all"
+  - text: "see"
+  - text: "like"
+  - text: "life"

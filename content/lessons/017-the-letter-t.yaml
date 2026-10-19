@@ -1,0 +1,26 @@
+schema: 1
+id: 17
+unit: 3
+ordinal: 17
+title: "The letter T"
+teaches: ["t"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 17. The top row is a short reach. Do not lift the whole hand.
+tasks:
+  - text: "t"
+  - text: "tt"
+  - text: "ta"
+  - text: "ts"
+  - text: "td"
+  - text: "tf"
+  - text: "a"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"
+  - text: "if"
+  - text: "us"
+  - text: "are"

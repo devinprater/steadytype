@@ -1,0 +1,27 @@
+schema: 1
+id: 34
+unit: 5
+ordinal: 34
+title: "Capitals E to H"
+teaches: ["E", "F", "G", "H"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 34. Hold Shift with the little finger opposite the letter.
+tasks:
+  - text: "A"
+  - text: "B"
+  - text: "C"
+  - text: "D"
+  - text: "E"
+  - text: "F"
+  - text: "G"
+  - text: "H"
+  - text: "A B C D E F G H"
+  - text: "Dad"
+  - text: "Ada"
+  - text: "Cab"
+  - text: "Bad"
+  - text: "Babe"
+  - text: "Face"

@@ -1,0 +1,26 @@
+schema: 1
+id: 19
+unit: 3
+ordinal: 19
+title: "The letter W"
+teaches: ["w"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 19. The top row is a short reach. Do not lift the whole hand.
+tasks:
+  - text: "w"
+  - text: "ww"
+  - text: "wa"
+  - text: "ws"
+  - text: "wd"
+  - text: "wf"
+  - text: "a"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"
+  - text: "if"
+  - text: "us"
+  - text: "we"

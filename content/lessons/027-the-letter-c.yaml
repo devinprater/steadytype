@@ -1,0 +1,26 @@
+schema: 1
+id: 27
+unit: 4
+ordinal: 27
+title: "The letter C"
+teaches: ["c"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 27. The bottom row curls your fingers down. Keep your wrists still.
+tasks:
+  - text: "c"
+  - text: "cc"
+  - text: "ca"
+  - text: "cs"
+  - text: "cd"
+  - text: "cf"
+  - text: "a"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"
+  - text: "if"
+  - text: "of"
+  - text: "or"

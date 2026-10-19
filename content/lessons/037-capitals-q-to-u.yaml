@@ -1,0 +1,40 @@
+schema: 1
+id: 37
+unit: 5
+ordinal: 37
+title: "Capitals Q to U"
+teaches: ["Q", "R", "S", "T", "U"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 37. Hold Shift with the little finger opposite the letter.
+tasks:
+  - text: "A"
+  - text: "B"
+  - text: "C"
+  - text: "D"
+  - text: "E"
+  - text: "F"
+  - text: "G"
+  - text: "H"
+  - text: "I"
+  - text: "J"
+  - text: "K"
+  - text: "L"
+  - text: "M"
+  - text: "N"
+  - text: "O"
+  - text: "P"
+  - text: "Q"
+  - text: "R"
+  - text: "S"
+  - text: "T"
+  - text: "U"
+  - text: "A B C D E F G H I J K L M N O P Q R S T U"
+  - text: "Dad"
+  - text: "Ada"
+  - text: "Cab"
+  - text: "Bad"
+  - text: "Babe"
+  - text: "Face"

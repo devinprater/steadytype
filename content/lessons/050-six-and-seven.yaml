@@ -1,0 +1,20 @@
+schema: 1
+id: 50
+unit: 7
+ordinal: 50
+title: "Six and seven"
+teaches: ["6", "7"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 50. Numbers come from the top row. Reach, press, and return.
+tasks:
+  - text: "45 54 44 55"
+  - text: "67 76 66 77"
+  - text: "66"
+  - text: "77"
+  - text: "666"
+  - text: "777"
+  - text: "6666"
+  - text: "7777"

@@ -1,0 +1,26 @@
+schema: 1
+id: 26
+unit: 4
+ordinal: 26
+title: "The letter M"
+teaches: ["m"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 26. The bottom row curls your fingers down. Keep your wrists still.
+tasks:
+  - text: "m"
+  - text: "mm"
+  - text: "ma"
+  - text: "ms"
+  - text: "md"
+  - text: "mf"
+  - text: "a"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"
+  - text: "if"
+  - text: "of"
+  - text: "or"

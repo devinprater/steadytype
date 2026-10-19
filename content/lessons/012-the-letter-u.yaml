@@ -1,0 +1,26 @@
+schema: 1
+id: 12
+unit: 2
+ordinal: 12
+title: "The letter U"
+teaches: ["u"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 12. Reach up with one finger, then return to the home row.
+tasks:
+  - text: "u"
+  - text: "uu"
+  - text: "ua"
+  - text: "us"
+  - text: "ud"
+  - text: "uf"
+  - text: "a"
+  - text: "as"
+  - text: "is"
+  - text: "if"
+  - text: "us"
+  - text: "are"
+  - text: "all"
+  - text: "see"

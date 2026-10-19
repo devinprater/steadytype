@@ -1,0 +1,22 @@
+schema: 1
+id: 56
+unit: 7
+ordinal: 56
+title: "Number review"
+teaches: ["5", "6"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 56. Numbers come from the top row. Reach, press, and return.
+tasks:
+  - text: "45 54 44 55"
+  - text: "67 76 66 77"
+  - text: "38 83 33 88"
+  - text: "29 92 22 99"
+  - text: "10 01 11 00"
+  - text: "123 456 789 0"
+  - text: "2026 10 19"
+  - text: "3:45 10:30"
+  - text: "555 0142"
+  - text: "12 34 56 78"

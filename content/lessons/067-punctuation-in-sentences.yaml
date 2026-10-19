@@ -1,0 +1,20 @@
+schema: 1
+id: 67
+unit: 9
+ordinal: 67
+title: "Punctuation in sentences"
+teaches: [","]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 67. Now put it together at a steady pace you can keep.
+tasks:
+  - text: "well, that is done."
+  - text: "it's a good day."
+  - text: "\"come in,\" she said."
+  - text: "where is the key?"
+  - text: "stop!"
+  - text: "he said: \"wait.\""
+  - text: "the list is short; the day is long."
+  - text: "(see the note.)"

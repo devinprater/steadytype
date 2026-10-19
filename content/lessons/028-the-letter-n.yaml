@@ -1,0 +1,26 @@
+schema: 1
+id: 28
+unit: 4
+ordinal: 28
+title: "The letter N"
+teaches: ["n"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 28. The bottom row curls your fingers down. Keep your wrists still.
+tasks:
+  - text: "n"
+  - text: "nn"
+  - text: "na"
+  - text: "ns"
+  - text: "nd"
+  - text: "nf"
+  - text: "a"
+  - text: "an"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"
+  - text: "in"
+  - text: "if"

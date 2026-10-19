@@ -1,0 +1,24 @@
+schema: 1
+id: 23
+unit: 3
+ordinal: 23
+title: "Top row words"
+teaches: ["t", "y", "w", "o", "q", "p"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 23. The top row is a short reach. Do not lift the whole hand.
+tasks:
+  - text: "after"
+  - text: "first"
+  - text: "quiet"
+  - text: "start"
+  - text: "still"
+  - text: "water"
+  - text: "world"
+  - text: "write"
+  - text: "also"
+  - text: "desk"
+  - text: "door"
+  - text: "fast"

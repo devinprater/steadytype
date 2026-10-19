@@ -1,0 +1,20 @@
+schema: 1
+id: 16
+unit: 2
+ordinal: 16
+title: "Top row phrases"
+teaches: ["e", "i", "r", "u"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 16. Reach up with one finger, then return to the home row.
+tasks:
+  - text: "a as"
+  - text: "is if"
+  - text: "us are"
+  - text: "all see"
+  - text: "like life"
+  - text: "side said"
+  - text: "ee"
+  - text: "ii"

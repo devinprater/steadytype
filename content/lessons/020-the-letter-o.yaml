@@ -1,0 +1,26 @@
+schema: 1
+id: 20
+unit: 3
+ordinal: 20
+title: "The letter O"
+teaches: ["o"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 20. The top row is a short reach. Do not lift the whole hand.
+tasks:
+  - text: "o"
+  - text: "oo"
+  - text: "oa"
+  - text: "os"
+  - text: "od"
+  - text: "of"
+  - text: "a"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"
+  - text: "if"
+  - text: "of"
+  - text: "or"

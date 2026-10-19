@@ -1,0 +1,20 @@
+schema: 1
+id: 63
+unit: 8
+ordinal: 63
+title: "Underscore, equals, plus"
+teaches: ["_", "=", "+"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 63. Symbols use Shift. Learn one pair at a time.
+tasks:
+  - text: "!! ?? !? ?!"
+  - text: "@@ ## @# #@"
+  - text: "$$ %% $% %$"
+  - text: "^^ && ^& &^"
+  - text: "* * ( ( ) )"
+  - text: "_ _ = = + +"
+  - text: "__"
+  - text: "=="

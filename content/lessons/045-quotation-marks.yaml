@@ -1,0 +1,20 @@
+schema: 1
+id: 45
+unit: 6
+ordinal: 45
+title: "Quotation marks"
+teaches: ["\""]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 45. Punctuation is a normal key press. Say the mark to yourself as you type.
+tasks:
+  - text: "well, that is done."
+  - text: "it's a good day."
+  - text: "\"come in,\" she said."
+  - text: "where is the key?"
+  - text: "stop!"
+  - text: "the list is short; the day is long."
+  - text: "the first day, the best day."
+  - text: "she asked, \"can you type this?\""

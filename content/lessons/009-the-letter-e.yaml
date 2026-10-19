@@ -1,0 +1,23 @@
+schema: 1
+id: 9
+unit: 2
+ordinal: 9
+title: "The letter E"
+teaches: ["e"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 9. Reach up with one finger, then return to the home row.
+tasks:
+  - text: "e"
+  - text: "ee"
+  - text: "ea"
+  - text: "es"
+  - text: "ed"
+  - text: "ef"
+  - text: "a"
+  - text: "as"
+  - text: "all"
+  - text: "see"
+  - text: "desk"

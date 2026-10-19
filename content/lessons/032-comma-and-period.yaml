@@ -1,0 +1,24 @@
+schema: 1
+id: 32
+unit: 4
+ordinal: 32
+title: "Comma and period"
+teaches: [",", "."]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 32. The bottom row curls your fingers down. Keep your wrists still.
+tasks:
+  - text: "a"
+  - text: "an"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"
+  - text: "in"
+  - text: "if"
+  - text: "of"
+  - text: "on"
+  - text: "or"
+  - text: "to"

@@ -1,0 +1,20 @@
+schema: 1
+id: 59
+unit: 8
+ordinal: 59
+title: "Dollar and percent"
+teaches: ["$", "%"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 59. Symbols use Shift. Learn one pair at a time.
+tasks:
+  - text: "!! ?? !? ?!"
+  - text: "@@ ## @# #@"
+  - text: "$$ %% $% %$"
+  - text: "$$"
+  - text: "%%"
+  - text: "$$$"
+  - text: "%%%"
+  - text: "$$$$"

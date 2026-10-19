@@ -1,0 +1,26 @@
+schema: 1
+id: 22
+unit: 3
+ordinal: 22
+title: "The letter P"
+teaches: ["p"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 22. The top row is a short reach. Do not lift the whole hand.
+tasks:
+  - text: "p"
+  - text: "pp"
+  - text: "pa"
+  - text: "ps"
+  - text: "pd"
+  - text: "pf"
+  - text: "a"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"
+  - text: "if"
+  - text: "of"
+  - text: "or"

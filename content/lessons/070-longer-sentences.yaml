@@ -1,0 +1,20 @@
+schema: 1
+id: 70
+unit: 9
+ordinal: 70
+title: "Longer sentences"
+teaches: ["space"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 70. Now put it together at a steady pace you can keep.
+tasks:
+  - text: "the cat sat on the mat."
+  - text: "we can see the sun."
+  - text: "she has a red hat."
+  - text: "he is at home."
+  - text: "they can read and write."
+  - text: "the dog ran to the door."
+  - text: "i can type this now."
+  - text: "you know the home row."

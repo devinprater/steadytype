@@ -1,0 +1,26 @@
+schema: 1
+id: 32
+unit: 4
+ordinal: 32
+title: "The letters G and H"
+teaches: ["g", "h"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 32. The bottom row curls your fingers down. Keep your wrists still.
+tasks:
+  - text: "g"
+  - text: "gg"
+  - text: "h"
+  - text: "hh"
+  - text: "ga"
+  - text: "gs"
+  - text: "gd"
+  - text: "gf"
+  - text: "a"
+  - text: "an"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"

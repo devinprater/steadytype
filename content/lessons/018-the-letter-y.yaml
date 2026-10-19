@@ -1,0 +1,26 @@
+schema: 1
+id: 18
+unit: 3
+ordinal: 18
+title: "The letter Y"
+teaches: ["y"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 18. The top row is a short reach. Do not lift the whole hand.
+tasks:
+  - text: "y"
+  - text: "yy"
+  - text: "ya"
+  - text: "ys"
+  - text: "yd"
+  - text: "yf"
+  - text: "a"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"
+  - text: "if"
+  - text: "us"
+  - text: "are"

@@ -1,0 +1,20 @@
+schema: 1
+id: 41
+unit: 6
+ordinal: 41
+title: "The comma"
+teaches: [","]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 41. Punctuation is a normal key press. Say the mark to yourself as you type.
+tasks:
+  - text: "a an"
+  - text: "as at"
+  - text: "is it"
+  - text: "in if"
+  - text: ",,"
+  - text: ",,,"
+  - text: ",,,,"
+  - text: ",,"

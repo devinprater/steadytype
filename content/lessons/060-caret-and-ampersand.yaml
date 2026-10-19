@@ -1,0 +1,20 @@
+schema: 1
+id: 60
+unit: 8
+ordinal: 60
+title: "Caret and ampersand"
+teaches: ["^", "&"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 60. Symbols use Shift. Learn one pair at a time.
+tasks:
+  - text: "!! ?? !? ?!"
+  - text: "@@ ## @# #@"
+  - text: "$$ %% $% %$"
+  - text: "^^ && ^& &^"
+  - text: "^^"
+  - text: "&&"
+  - text: "^^^"
+  - text: "&&&"

@@ -1,0 +1,20 @@
+schema: 1
+id: 24
+unit: 3
+ordinal: 24
+title: "Top row sentences"
+teaches: ["t", "y", "w", "o", "q", "p"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 24. The top row is a short reach. Do not lift the whole hand.
+tasks:
+  - text: "a as"
+  - text: "at is"
+  - text: "it if"
+  - text: "of or"
+  - text: "tt"
+  - text: "yy"
+  - text: "ww"
+  - text: "oo"

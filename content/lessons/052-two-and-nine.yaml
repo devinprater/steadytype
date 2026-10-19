@@ -1,0 +1,20 @@
+schema: 1
+id: 52
+unit: 7
+ordinal: 52
+title: "Two and nine"
+teaches: ["2", "9"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 52. Numbers come from the top row. Reach, press, and return.
+tasks:
+  - text: "45 54 44 55"
+  - text: "67 76 66 77"
+  - text: "38 83 33 88"
+  - text: "29 92 22 99"
+  - text: "22"
+  - text: "99"
+  - text: "222"
+  - text: "999"

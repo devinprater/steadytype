@@ -7,8 +7,13 @@ ROOT = Path(__file__).resolve().parents[2]
 COURSE = load_course(ROOT / "content" / "course.yaml")
 
 
-def test_course_has_five_seed_lessons():
-    assert [lesson.id for lesson in COURSE.lessons] == [1, 2, 3, 4, 5]
+def test_course_has_seventy_two_lessons():
+    assert [lesson.id for lesson in COURSE.lessons] == list(range(1, 73))
+
+
+def test_every_lesson_has_practice_tasks():
+    for lesson in COURSE.lessons:
+        assert len(lesson.tasks) >= 3, f"lesson {lesson.id} has {len(lesson.tasks)} tasks"
 
 
 def test_no_task_uses_an_untaught_character():

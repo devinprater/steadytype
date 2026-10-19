@@ -1,0 +1,20 @@
+schema: 1
+id: 64
+unit: 8
+ordinal: 64
+title: "Brackets and slashes"
+teaches: ["[", "]", "{", "}", "/", "|"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 64. Symbols use Shift. Learn one pair at a time.
+tasks:
+  - text: "!! ?? !? ?!"
+  - text: "@@ ## @# #@"
+  - text: "$$ %% $% %$"
+  - text: "^^ && ^& &^"
+  - text: "* * ( ( ) )"
+  - text: "_ _ = = + +"
+  - text: "[ ] { } ( )"
+  - text: "[["

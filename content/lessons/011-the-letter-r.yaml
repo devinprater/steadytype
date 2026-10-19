@@ -1,0 +1,26 @@
+schema: 1
+id: 11
+unit: 2
+ordinal: 11
+title: "The letter R"
+teaches: ["r"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 11. Reach up with one finger, then return to the home row.
+tasks:
+  - text: "r"
+  - text: "rr"
+  - text: "ra"
+  - text: "rs"
+  - text: "rd"
+  - text: "rf"
+  - text: "a"
+  - text: "as"
+  - text: "is"
+  - text: "if"
+  - text: "are"
+  - text: "all"
+  - text: "see"
+  - text: "like"

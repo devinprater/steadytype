@@ -1,0 +1,20 @@
+schema: 1
+id: 49
+unit: 7
+ordinal: 49
+title: "Four and five"
+teaches: ["4", "5"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 49. Numbers come from the top row. Reach, press, and return.
+tasks:
+  - text: "45 54 44 55"
+  - text: "44"
+  - text: "55"
+  - text: "444"
+  - text: "555"
+  - text: "4444"
+  - text: "5555"
+  - text: "44"

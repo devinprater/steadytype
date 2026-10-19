@@ -1,8 +1,75 @@
 schema: 1
-version: "0.1.0"
+version: "1.0.0"
 lessons:
   - lessons/001-function-keys.yaml
   - lessons/002-home-row-position.yaml
   - lessons/003-home-row-letters.yaml
   - lessons/004-home-row-words.yaml
   - lessons/005-home-row-phrases.yaml
+  - lessons/006-home-row-review.yaml
+  - lessons/007-home-row-short-phrases.yaml
+  - lessons/008-home-row-check.yaml
+  - lessons/009-the-letter-e.yaml
+  - lessons/010-the-letter-i.yaml
+  - lessons/011-the-letter-r.yaml
+  - lessons/012-the-letter-u.yaml
+  - lessons/013-e-and-i-words.yaml
+  - lessons/014-r-and-u-words.yaml
+  - lessons/015-top-row-mix.yaml
+  - lessons/016-top-row-phrases.yaml
+  - lessons/017-the-letter-t.yaml
+  - lessons/018-the-letter-y.yaml
+  - lessons/019-the-letter-w.yaml
+  - lessons/020-the-letter-o.yaml
+  - lessons/021-the-letter-q.yaml
+  - lessons/022-the-letter-p.yaml
+  - lessons/023-top-row-words.yaml
+  - lessons/024-top-row-sentences.yaml
+  - lessons/025-the-letter-v.yaml
+  - lessons/026-the-letter-m.yaml
+  - lessons/027-the-letter-c.yaml
+  - lessons/028-the-letter-n.yaml
+  - lessons/029-the-letter-x.yaml
+  - lessons/030-the-letter-z.yaml
+  - lessons/031-the-letter-b.yaml
+  - lessons/032-the-letters-g-and-h.yaml
+  - lessons/033-shift-and-capitals-a-to-d.yaml
+  - lessons/034-capitals-e-to-h.yaml
+  - lessons/035-capitals-i-to-l.yaml
+  - lessons/036-capitals-m-to-p.yaml
+  - lessons/037-capitals-q-to-u.yaml
+  - lessons/038-capitals-v-to-z.yaml
+  - lessons/039-names.yaml
+  - lessons/040-starting-a-sentence.yaml
+  - lessons/041-the-comma-and-period.yaml
+  - lessons/042-the-question-mark.yaml
+  - lessons/043-the-exclamation-mark.yaml
+  - lessons/044-the-apostrophe.yaml
+  - lessons/045-quotation-marks.yaml
+  - lessons/046-colon-and-semicolon.yaml
+  - lessons/047-hyphen-and-parentheses.yaml
+  - lessons/048-punctuation-review.yaml
+  - lessons/049-four-and-five.yaml
+  - lessons/050-six-and-seven.yaml
+  - lessons/051-three-and-eight.yaml
+  - lessons/052-two-and-nine.yaml
+  - lessons/053-one-and-zero.yaml
+  - lessons/054-number-rows.yaml
+  - lessons/055-dates-and-times.yaml
+  - lessons/056-number-review.yaml
+  - lessons/057-exclamation-and-question.yaml
+  - lessons/058-at-and-hash.yaml
+  - lessons/059-dollar-and-percent.yaml
+  - lessons/060-caret-and-ampersand.yaml
+  - lessons/061-asterisk-and-open-parenthesis.yaml
+  - lessons/062-close-parenthesis-and-hyphen.yaml
+  - lessons/063-underscore-equals-plus.yaml
+  - lessons/064-brackets-and-slashes.yaml
+  - lessons/065-common-words.yaml
+  - lessons/066-sentences.yaml
+  - lessons/067-punctuation-in-sentences.yaml
+  - lessons/068-numbers-and-symbols.yaml
+  - lessons/069-a-steady-pace.yaml
+  - lessons/070-longer-sentences.yaml
+  - lessons/071-certification-practice.yaml
+  - lessons/072-final-review.yaml

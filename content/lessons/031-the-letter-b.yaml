@@ -1,0 +1,26 @@
+schema: 1
+id: 31
+unit: 4
+ordinal: 31
+title: "The letter B"
+teaches: ["b"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 31. The bottom row curls your fingers down. Keep your wrists still.
+tasks:
+  - text: "b"
+  - text: "bb"
+  - text: "ba"
+  - text: "bs"
+  - text: "bd"
+  - text: "bf"
+  - text: "a"
+  - text: "an"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"
+  - text: "in"
+  - text: "if"

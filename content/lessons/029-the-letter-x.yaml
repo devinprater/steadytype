@@ -1,0 +1,26 @@
+schema: 1
+id: 29
+unit: 4
+ordinal: 29
+title: "The letter X"
+teaches: ["x"]
+kind: keyboarding
+end_key: space
+repeat: 4
+intro: >-
+  This is lesson 29. The bottom row curls your fingers down. Keep your wrists still.
+tasks:
+  - text: "x"
+  - text: "xx"
+  - text: "xa"
+  - text: "xs"
+  - text: "xd"
+  - text: "xf"
+  - text: "a"
+  - text: "an"
+  - text: "as"
+  - text: "at"
+  - text: "is"
+  - text: "it"
+  - text: "in"
+  - text: "if"
