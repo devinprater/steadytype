@@ -22,13 +22,15 @@ class LessonPresenter:
     def __init__(self, lesson: Lesson, prefs: Preferences, goals: Goals,
                  speech, player, save: Callable | None = None,
                  display: DisplayPort | None = None,
-                 now: Callable[[], float] = time.monotonic) -> None:
+                 now: Callable[[], float] = time.monotonic,
+                 later: Callable | None = None) -> None:
         self.lesson = lesson
         self.prefs = prefs
         self.speech = speech
         self.player = player
         self.save = save or (lambda record: None)
         self.display = display
+        self.later = later
         self.session = LessonSession(lesson, prefs, goals, now=now)
         self.finished = False
 
@@ -67,7 +69,14 @@ class LessonPresenter:
     def _run(self, commands) -> None:
         for command in commands:
             if isinstance(command, Speak):
-                self.speech.speak(localize(command.text), command.interrupt)
+                text = localize(command.text)
+                if text.startswith("Again.") and self.later is not None:
+                    def say_again(line: str = text, cut: bool = command.interrupt) -> None:
+                        self.speech.speak(line, cut)
+
+                    self.later(900, say_again)
+                else:
+                    self.speech.speak(text, command.interrupt)
             elif isinstance(command, Tone):
                 if self.prefs.tones:
                     self.player.play(command.name)

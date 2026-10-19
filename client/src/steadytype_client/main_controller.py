@@ -48,6 +48,7 @@ class AppController:
         self.dictation_runner = None
         self.game_runner = None
         self.game_index = 0
+        self.next_ready = False
         self.dictation_index = 0
         self.test_timer = None
         server = os.environ.get("STEADYTYPE_SERVER") or self.store.get_setting("server")
@@ -100,11 +101,12 @@ class AppController:
         self.stop_lesson()
         if start_task > 0:
             lesson = replace(lesson, tasks=lesson.tasks[start_task:])
+        self.next_ready = False
         self.router.reset()
         self.router.enabled = "f1" not in lesson.teaches
         self.presenter = LessonPresenter(
             lesson, self.prefs, Goals(), self.speech, self.player,
-            save=self._save_attempt, display=self.frame.surface)
+            save=self._save_attempt, display=self.frame.surface, later=self._later)
         self.capture_ok = False
         if self.capture is not None:
             self.capture_ok = self.capture.start(self._from_capture)
@@ -170,6 +172,10 @@ class AppController:
                 self._end_timed_test()
             return True
         if self.presenter is None:
+            if self.next_ready and event.key is Key.ENTER:
+                self.next_ready = False
+                self.next_lesson()
+                return True
             return False
         if not self.router.enabled:
             self.presenter.handle(event)
@@ -185,7 +191,13 @@ class AppController:
             self._lesson_finished()
         return True
 
+    def _later(self, milliseconds: int, action) -> None:
+        import wx
+
+        wx.CallLater(milliseconds, action)
+
     def _lesson_finished(self) -> None:
+        self.next_ready = True
         self.stop_lesson()
         if self.frame is not None:
             self.frame.set_status("Lesson complete")
