@@ -162,7 +162,60 @@ class SaySpeech:
             self._current = None
 
 
+
+def voiceover_running() -> bool:
+    """VoiceOver posts announcements only while it is running."""
+    import subprocess
+
+    try:
+        return subprocess.run(["pgrep", "-x", "VoiceOver"], capture_output=True, check=False,
+                              timeout=2).returncode == 0
+    except Exception:  # noqa: BLE001 - no pgrep, so assume no VoiceOver
+        return False
+
+
+class VoiceOverSpeech:
+    """Speak by asking VoiceOver to announce, so it uses its own voice and braille."""
+
+    name = "VoiceOver"
+
+    def __init__(self) -> None:
+        import AppKit
+
+        self._appkit = AppKit
+
+    def speak(self, text: str, interrupt: bool = False) -> None:
+        AppKit = self._appkit
+        priority = (AppKit.NSAccessibilityPriorityHigh if interrupt
+                    else AppKit.NSAccessibilityPriorityMedium)
+        AppKit.NSAccessibilityPostNotificationWithUserInfo(
+            AppKit.NSApp(),
+            AppKit.NSAccessibilityAnnouncementRequestedNotification,
+            {
+                AppKit.NSAccessibilityAnnouncementKey: text,
+                AppKit.NSAccessibilityPriorityKey: priority,
+            },
+        )
+
+    def braille(self, text: str) -> None:
+        self.speak(text)
+
+    def configure(self, rate: float, pitch: float, volume: float,
+                  voice: str | None) -> None:
+        pass
+
+    def stop(self) -> None:
+        pass
+
+
 def create_speech() -> SpeechEngine:
+    import sys
+
+    if sys.platform == "darwin" and voiceover_running():
+        try:
+            return VoiceOverSpeech()
+        except Exception as error:  # noqa: BLE001 - fall through to Prism
+            PrismSpeech.reason = f"voiceover: {type(error).__name__}: {error}"
     try:
         return PrismSpeech()
     except Exception as error:

@@ -16,7 +16,7 @@ a = Analysis(
         (str(repo / "assets" / "sounds"), "assets/sounds"),
         (str(repo / "content"), "content"),
     ] + prism_datas,
-    hiddenimports=["prism", "prism._prism_cffi", "_cffi_backend", "wx", "Quartz", "objc"] + prism_hidden,
+    hiddenimports=["prism", "prism._prism_cffi", "_cffi_backend", "wx", "Quartz", "AppKit", "objc"] + prism_hidden,
     module_collection_mode={"prism": "py"},
     hookspath=[],
     runtime_hooks=[],
