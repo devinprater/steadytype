@@ -10,6 +10,7 @@ from sqlalchemy import inspect
 from sqlalchemy import text as sql_text
 from starlette.middleware.sessions import SessionMiddleware
 
+from . import models  # noqa: F401 - registers every table before create_all
 from .config import Settings
 from .db import Base, make_engine, make_session
 
