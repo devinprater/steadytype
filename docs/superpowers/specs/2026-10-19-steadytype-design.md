@@ -1,10 +1,10 @@
-# SpokenKeys — design specification
+# SteadyType — design specification
 
 - **Status:** draft for review
 - **Date:** 2026-10-19
-- **Working name:** SpokenKeys. Changeable before the first release.
+- **Name:** SteadyType
 - **License:** GPL-3.0-or-later
-- **Repository:** public on GitHub under `devinprater/spokenkeys`
+- **Repository:** public on GitHub under `devinprater/steadytype`
 
 ---
 
@@ -18,7 +18,7 @@ TypeAbility is the opposite: speech-first, keyboard-first, and built around a
 screen reader from the start. But it exists only on Windows, only through JAWS or
 Fusion, has no staff dashboard, and its records are files on one computer.
 
-SpokenKeys takes TypeAbility's teaching method and TypingClub's staff tools, and
+SteadyType takes TypeAbility's teaching method and TypingClub's staff tools, and
 builds them as one modern cross-platform system.
 
 ## 2. Who it is for
@@ -535,14 +535,14 @@ task works with it disabled.
 ## 10. Architecture
 
 ```
-spokenkeys/
+steadytype/
   engine/                  # pure Python, no I/O
-    spokenkeys_engine/
+    steadytype_engine/
       keys.py  events.py  lesson.py  session.py
       scoring.py  dictation.py  games/
     tests/
   client/
-    spokenkeys_client/
+    steadytype_client/
       app.py                 # wx application and frame
       ui/                    # sign-in, lesson surface, pickers, preferences
       speech/                # Prism wrapper, tone player
@@ -646,17 +646,16 @@ schema.
 
 ## 15. Open questions
 
-1. **Name.** SpokenKeys is a working title.
-2. **Retention.** How long should attempts be kept before an admin purge is
+1. **Retention.** How long should attempts be kept before an admin purge is
    suggested? Three years is the default assumption.
-3. **Braille keyboard input.** Out of scope now. Revisit when a student needs it.
-4. **Academic quizzes.** Out of scope now. Revisit after the browser practice page.
-5. **Screen reader key lesson.** TypeAbility taught the JAWS key. A lesson that
+2. **Braille keyboard input.** Out of scope now. Revisit when a student needs it.
+3. **Academic quizzes.** Out of scope now. Revisit after the browser practice page.
+4. **Screen reader key lesson.** TypeAbility taught the JAWS key. A lesson that
    teaches the screen reader's own modifier key would need to detect the reader.
    Later.
-6. **Browser practice page.** Next milestone after the first release. Keyboard
+5. **Browser practice page.** Next milestone after the first release. Keyboard
    lessons only.
-7. **Staff roles.** Admin and teacher are enough for now. A "distance learning
+6. **Staff roles.** Admin and teacher are enough for now. A "distance learning
    coordinator" role can wait.
 
 ## 16. Risks
